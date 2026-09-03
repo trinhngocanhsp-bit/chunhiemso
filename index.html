@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sổ Chủ Nhiệm Điện Tử V65 - Lớp 11A5</title>
+    <title>Sổ Chủ Nhiệm Điện Tử V66 - Lớp 11A5</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -62,19 +62,20 @@
         .btn-count { width: 28px; height: 28px; border-radius: 6px; border: none; background: #e2e8f0; font-weight: 900; font-size: 1rem; cursor: pointer; }
         .count-val { width: 35px; text-align: center; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; font-weight: 800; outline: none; padding: 2px; }
 
-        .seating-map-container { background: #fff; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px; overflow-x: auto; }
-        .seating-grid-wrapper { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; min-width: 680px; }
+        /* SƠ ĐỒ LỚP SIÊU CHUẨN - KHÔNG BỊ CẮT TRÊN ĐIỆN THOẠI */
+        .seating-map-container { background: #fff; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .seating-scroll-area { width: max-content; min-width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 5px; }
+        .seating-grid-wrapper { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; width: 840px; }
         .col-group { display: flex; flex-direction: column; gap: 4px; border: 2px solid #1e3a8a; padding: 4px; border-radius: 8px; background: #f8fafc; }
         .seat-row { display: flex; gap: 4px; }
-        
-        /* Tùy chỉnh Sơ đồ lớp cho trọn vẹn tên */
-        .seat-box { width: 85px; height: 50px; border: 1px solid #94a3b8; background: #fff; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2px; position: relative; transition: 0.2s;}
-        .seat-box.interactive { cursor: pointer; }
-        .seat-box.interactive:hover { border-color: #ea580c; background: #fff7ed;}
+        .seat-box { width: 92px; height: 60px; border: 1px solid #94a3b8; background: #fff; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2px; position: relative; transition: 0.2s; cursor: pointer; }
+        .seat-box:hover { border-color: #ea580c; background: #fff7ed;}
         .seat-box.selected-seat { border: 2px solid #ea580c; background: #fff7ed; transform: scale(1.05); z-index: 10;}
+        .seat-num { font-size: 0.58rem; color: #e11d48; font-weight: 800; line-height: 1; }
+        .seat-name { font-size: 0.65rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; line-height: 1.2; margin-top: 2px; color: #0f172a; }
 
-        .room-furniture-row { display: flex; justify-content: space-around; margin: 12px 0; gap: 8px; min-width: 680px; }
-        .room-box { border: 2px solid #334155; background: #e2e8f0; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.78rem; }
+        .room-furniture-row { display: flex; justify-content: space-around; margin: 12px 0; gap: 8px; width: 840px; }
+        .room-box { border: 2px solid #334155; background: #e2e8f0; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.78rem; text-align: center; }
         .pinned-rule-box { background: #fef2f2; border: 1.5px solid #fecdd3; border-radius: 10px; padding: 10px; margin-bottom: 12px; }
         
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 2000; justify-content: center; align-items: center; padding: 10px; }
@@ -143,7 +144,7 @@
                     <div id="student-detail-report" style="background:#f0f9ff; margin-top:8px; padding:10px; border-radius:8px; border:1px dashed #7dd3fc; display:none; font-size:0.85rem;"></div>
                 </div>
 
-                <!-- SƠ ĐỒ LỚP -->
+                <!-- SƠ ĐỒ LỚP MỚI - FIX CẮT LỀ -->
                 <div style="background:#fff; border:1.5px solid #3b82f6; padding:12px; border-radius:10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
                         <h4 style="color:#1e3a8a; font-size:0.95rem; margin:0;">📌 SƠ ĐỒ VỊ TRÍ NGỒI LỚP 11A5</h4>
@@ -153,13 +154,18 @@
                             <select id="seating-week-select" onchange="renderSeatingMap()" style="padding: 4px; border-radius: 6px; font-weight: 700; border: 1px solid #3b82f6; width:auto;"></select>
                         </div>
                     </div>
+                    
                     <div class="seating-map-container">
-                        <div class="seating-grid-wrapper" id="seating-map-grid-container"></div>
-                        <div class="room-furniture-row">
-                            <div class="room-box">CỬA RA VÀO</div>
-                            <div class="room-box" style="background:#dcfce7; color:#166534;">BÀN GIÁO VIÊN</div>
+                        <div class="seating-scroll-area">
+                            <div class="seating-grid-wrapper" id="seating-map-grid-container"></div>
+                            <div class="room-furniture-row">
+                                <div class="room-box">CỬA RA VÀO</div>
+                                <div class="room-box" style="background:#dcfce7; color:#166534;">BÀN GIÁO VIÊN</div>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <div class="room-box" style="display:inline-block; min-width: 200px; background:#eff6ff; color:#1e40af;">BẢNG LỚP</div>
+                            </div>
                         </div>
-                        <div style="text-align: center;"><div class="room-box" style="display:inline-block; min-width: 200px; background:#eff6ff; color:#1e40af;">BẢNG LỚP</div></div>
                     </div>
                 </div>
             </div>
@@ -255,10 +261,10 @@
                         <input type="text" id="new-student-name" placeholder="Thêm tên 1 học sinh...">
                         <button class="btn-action" style="background:#0ea5e9;" onclick="addNewStudent()">Thêm</button>
                     </div>
-                    <!-- DANH SÁCH HỌC SINH -->
                     <div style="max-height:260px; overflow-y:auto; border:1px solid #cbd5e1; border-radius:6px; padding:6px; background:#f8fafc;" id="admin-student-list-container"></div>
                 </div>
 
+                <!-- SƠ ĐỒ LỚP MỚI - FIX CẮT LỀ BÊN TRONG TAB 4 -->
                 <div style="background:#fff; border:1.5px solid #d97706; padding:12px; border-radius:10px; margin-bottom: 14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                         <h4 style="color:#b45309; font-size:0.9rem; margin:0;">QUẢN LÝ SƠ ĐỒ LỚP & ĐỔI CHỖ</h4>
@@ -270,7 +276,16 @@
                         <button class="btn-action" style="background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; padding:6px 10px;" onclick="resetSeatingMap()">Khôi phục sơ đồ</button>
                     </div>
                     <div class="seating-map-container" style="background:#fffbeb; border-color:#fde047;">
-                        <div class="seating-grid-wrapper" id="admin-seating-map-grid-container"></div>
+                        <div class="seating-scroll-area">
+                            <div class="seating-grid-wrapper" id="admin-seating-map-grid-container"></div>
+                            <div class="room-furniture-row">
+                                <div class="room-box">CỬA RA VÀO</div>
+                                <div class="room-box" style="background:#dcfce7; color:#166534;">BÀN GIÁO VIÊN</div>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <div class="room-box" style="display:inline-block; min-width: 200px; background:#eff6ff; color:#1e40af;">BẢNG LỚP</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -294,7 +309,7 @@
         <footer style="text-align:center; padding:12px 0; color:#64748b; font-size:0.75rem;">© Sổ Chủ Nhiệm — GVCN: <strong>Trịnh Ngọc Ánh</strong> (THPT Tân Yên số 2)</footer>
     </div>
 
-    <!-- MODALS ĐƯỢC KHÔI PHỤC ĐẦY ĐỦ CHI TIẾT -->
+    <!-- MODALS ĐƯỢC KHÔI PHỤC ĐẦY ĐỦ CHI TIẾT 100% -->
     <div class="modal-overlay" id="rulesModal">
         <div class="auth-card" style="max-width:550px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:2px solid var(--primary); padding-bottom:6px;">
