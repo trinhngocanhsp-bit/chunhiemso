@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sổ Chủ Nhiệm Điện Tử V64 - Lớp 11A5</title>
+    <title>Sổ Chủ Nhiệm Điện Tử V65 - Lớp 11A5</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -294,18 +294,49 @@
         <footer style="text-align:center; padding:12px 0; color:#64748b; font-size:0.75rem;">© Sổ Chủ Nhiệm — GVCN: <strong>Trịnh Ngọc Ánh</strong> (THPT Tân Yên số 2)</footer>
     </div>
 
-    <!-- MODALS -->
+    <!-- MODALS ĐƯỢC KHÔI PHỤC ĐẦY ĐỦ CHI TIẾT -->
     <div class="modal-overlay" id="rulesModal">
         <div class="auth-card" style="max-width:550px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:2px solid var(--primary); padding-bottom:6px;">
-                <h4 style="font-weight: 800; color:var(--primary); font-size:1rem; margin:0;">QUY CHẾ CHẤM ĐIỂM</h4>
+                <h4 style="font-weight: 800; color:var(--primary); font-size:1rem; margin:0;">QUY CHẾ CHẤM ĐIỂM THI ĐUA</h4>
                 <button onclick="document.getElementById('rulesModal').classList.remove('open')" style="background:#e2e8f0; border:none; width:28px; height:28px; border-radius:50%; font-weight:900; cursor:pointer;">✕</button>
             </div>
-            <div style="font-size:0.82rem; color:#334155; max-height:60vh; overflow-y:auto;">
-                <p>Mỗi học sinh có 100 điểm/tuần.</p>
-                <p><b>Trừ:</b> Nghỉ KP -50đ, Muộn -10đ đến -30đ, SĐB -30đ, Đồng phục -20đ...</p>
-                <p><b>Cộng:</b> Điểm tốt (>9) +5đ, Phát biểu +2đ, HĐ lớp +20đ...</p>
-                <p><b>Điểm chức vụ:</b> Lớp trưởng/Bí thư +30đ, các chức vụ khác +20đ.</p>
+            <div style="font-size:0.82rem; color:#334155; max-height:60vh; overflow-y:auto; line-height:1.6;">
+                <p style="margin-bottom:8px; font-style:italic;">Mỗi học sinh có 100 điểm/tuần; số điểm thay đổi theo điểm cộng/trừ các mục dưới đây. Cuối tuần, tổ trưởng tổng hợp và nhập vào bảng tổng hợp theo yêu cầu của GVCN.</p>
+                
+                <h5 style="color:#b91c1c; margin:8px 0 4px 0; font-weight:800;">🔴 CÁC MỤC TRỪ ĐIỂM:</h5>
+                <ul style="padding-left:16px; margin-bottom:8px;">
+                    <li><strong>Nghỉ học:</strong> Có phép: -20đ/buổi; Không phép: -50đ/buổi.</li>
+                    <li><strong>Đi muộn (ĐHM):</strong> Dưới 3': -10đ; 3-5': -20đ; Trên 5': -30đ.</li>
+                    <li><strong>Không thực hiện đồng phục, thẻ HS:</strong> -20đ/buổi.</li>
+                    <li><strong>Nói chuyện, làm việc riêng:</strong> -20đ/lần.</li>
+                    <li><strong>Ngồi sai vị trí:</strong> -10đ/tiết.</li>
+                    <li><strong>Báo cáo chậm:</strong> -5đ/ngày.</li>
+                    <li><strong>Trực nhật bẩn:</strong> -5đ/tiết.</li>
+                    <li><strong>Không đội MBH / Đi xe trong sân trường:</strong> -30đ/lần.</li>
+                    <li><strong>Lỗi cờ đỏ, xung kích:</strong> Trừ số lỗi x 1 lỗi = số điểm bị trừ * 2 (Lũy tiến).</li>
+                    <li><strong>Lỗi Sổ đầu bài (SĐB):</strong> -30đ/lỗi.</li>
+                    <li><strong>Thiếu ĐD, ĐC học tập:</strong> -20đ/lần.</li>
+                    <li><strong>Không học/làm bài cũ:</strong> -30đ/lần.</li>
+                    <li><strong>Sử dụng điện thoại trong giờ:</strong> -100đ + thu điện thoại 2 tháng.</li>
+                    <li><strong>Cán bộ lớp không HTNV:</strong> Trừ điểm ít nhất gấp 1.5 lần số điểm được cộng.</li>
+                    <li><strong>Trừ đột xuất:</strong> Do GVCN quyết định tùy trường hợp.</li>
+                </ul>
+
+                <h5 style="color:#16a34a; margin:8px 0 4px 0; font-weight:800;">🟢 CÁC MỤC CỘNG ĐIỂM (THƯỞNG):</h5>
+                <ul style="padding-left:16px; margin-bottom:8px;">
+                    <li><strong>Điểm xuất sắc (>9):</strong> +5đ/điểm thường xuyên, +10đ/điểm định kỳ.</li>
+                    <li><strong>Tham gia HĐ lớp:</strong> +20đ/lần (Có giải: KK +10đ, Ba +20đ, Nhì +30đ, Nhất +40đ).</li>
+                    <li><strong>Tham gia HĐ trường:</strong> Cộng điểm theo thành tích tập thể lớp đạt được.</li>
+                    <li><strong>Phát biểu, thuyết trình:</strong> +2đ/lần phát biểu, +10đ/lần thuyết trình.</li>
+                    <li><strong>Cộng đột xuất:</strong> Do GVCN quyết định tùy trường hợp.</li>
+                </ul>
+
+                <h5 style="color:#b45309; margin:8px 0 4px 0; font-weight:800;">⭐ ĐIỂM TRÁCH NHIỆM HÀNG TUẦN:</h5>
+                <ul style="padding-left:16px; margin-bottom:0;">
+                    <li><strong>Lớp trưởng, Bí thư:</strong> +30đ/tuần.</li>
+                    <li><strong>Lớp phó, Tổ trưởng, Sao đỏ, Giữ SĐB:</strong> +20đ/tuần.</li>
+                </ul>
             </div>
             <button onclick="document.getElementById('rulesModal').classList.remove('open')" class="btn-action" style="width:100%; margin-top:12px; background:#64748b;">Đóng</button>
         </div>
@@ -533,6 +564,14 @@
             } else alert("Sai mật khẩu!");
         }
 
+        function getShortName(fullName) {
+            if(!fullName) return "";
+            let parts = fullName.trim().split(" ");
+            if (parts.length <= 2) return fullName;
+            let filtered = parts.filter(p => p !== "Thị");
+            return filtered.length >= 2 ? filtered[0] + " " + filtered[filtered.length - 1] : fullName;
+        }
+
         function calculatePenalty(basePen, count) {
             let totalPen = 0;
             for (let i = 1; i <= count; i++) {
@@ -642,6 +681,8 @@
             let respPoint = getRespPoint(stt);
             let name = STATE.students[stt-1];
 
+            document.getElementById("detail-modal-title").innerText = `Sao kê điểm`;
+
             let html = `<p style="margin-bottom:6px; font-size:0.85rem; color:#475569;"><strong>${name}</strong><br>Chức vụ: <strong>${posName}</strong> | Tuần: <strong>${week}</strong></p>`;
             
             html += `<div style="width:100%;"><table style="width:100%; border-collapse:collapse; font-size:0.75rem; table-layout:fixed; word-wrap:break-word; min-width:unset;">`;
@@ -707,7 +748,7 @@
             });
 
             reportDiv.innerHTML = `<h5 style="color:#0369a1; font-size:0.9rem; margin-bottom:6px; border-bottom:1px solid #bae6fd; padding-bottom:4px;">Hồ sơ thi đua ${timeLabel}: <strong style="text-transform:uppercase;">${name}</strong></h5>`;
-            if(totalRecords === 0) reportDiv.innerHTML += `<p style="color:#16a34a; font-weight:800; margin:0;">🎉 Không có phát sinh trong ${timeLabel}.</p>`;
+            if(totalRecords === 0) reportDiv.innerHTML += `<p style="color:#16a34a; font-weight:800; margin:0;">🎉 Không có ghi nhận điểm trừ trong ${timeLabel}.</p>`;
             else reportDiv.innerHTML += listHTML + `</ul>`;
             reportDiv.style.display = "block";
         }
