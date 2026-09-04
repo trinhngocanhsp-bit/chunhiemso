@@ -10,7 +10,7 @@
     
     <!-- ============================================================ -->
     <!-- ĐẶT MÃ KÉT SẮT RIÊNG CHO TỪNG LỚP Ở ĐÂY (Vd: 10A3, 10A4...) -->
-    <script> const MA_DU_LIEU = "11A5"; </script>
+    <script> const MA_DU_LIEU = "10A3"; </script>
     <!-- ============================================================ -->
 
     <!-- FIREBASE -->
@@ -46,16 +46,20 @@
         .banner-line-2 { font-size: 0.85rem; font-weight: 700; color: #93c5fd; margin-bottom: 2px; }
         .banner-line-3 { font-size: 0.75rem; color: #fde047; font-weight: 600; }
 
-        .nav-bar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
-        @media (min-width: 750px) { .nav-bar-grid { grid-template-columns: repeat(4, 1fr); } }
-        .btn-nav-card { border: 1.5px solid var(--border); border-radius: 10px; padding: 8px; cursor: pointer; background: #ffffff; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
+        .nav-bar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 10px; }
+        @media (min-width: 600px) { .nav-bar-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 900px) { .nav-bar-grid { grid-template-columns: repeat(5, 1fr); } }
+        .btn-nav-card { border: 1.5px solid var(--border); border-radius: 10px; padding: 8px; cursor: pointer; background: #ffffff; display: flex; align-items: center; gap: 6px; transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
         .btn-nav-card.active { border-color: var(--primary); background: #eff6ff; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);}
-        .nav-card-num { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; color: #fff; flex-shrink: 0; }
-        .nav-num-1 { background: linear-gradient(135deg, #d97706, #b45309); } .nav-num-2 { background: linear-gradient(135deg, #16a34a, #15803d); } 
-        .nav-num-3 { background: linear-gradient(135deg, #dc2626, #991b1b); } .nav-num-4 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } 
+        .nav-card-num { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; color: #fff; flex-shrink: 0; }
+        .nav-num-1 { background: linear-gradient(135deg, #d97706, #b45309); } 
+        .nav-num-2 { background: linear-gradient(135deg, #16a34a, #15803d); } 
+        .nav-num-3 { background: linear-gradient(135deg, #dc2626, #991b1b); } 
+        .nav-num-4 { background: linear-gradient(135deg, #0d9488, #0f766e); } 
+        .nav-num-5 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } 
         .nav-card-text { text-align: left; }
-        .nav-card-text strong { display: block; font-size: 0.75rem; color: #1e293b; font-weight: 800; }
-        .nav-card-text small { font-size: 0.65rem; color: #64748b; }
+        .nav-card-text strong { display: block; font-size: 0.72rem; color: #1e293b; font-weight: 800; }
+        .nav-card-text small { font-size: 0.6rem; color: #64748b; white-space: nowrap;}
 
         .view-panel { display: none; animation: fadeIn 0.2s; } .view-panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -133,22 +137,26 @@
             <div id="live-realtime-week-badge" style="margin-top:8px; display:inline-block; background:rgba(255,255,255,0.25); padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:800; backdrop-filter: blur(4px); box-shadow: 0 2px 4px rgba(0,0,0,0.1);"><i class="fa-solid fa-clock mr-1"></i> Đang tải dữ liệu...</div>
         </div>
 
-        <!-- 4 TABS ĐIỀU HƯỚNG -->
+        <!-- 5 TABS ĐIỀU HƯỚNG MỚI -->
         <div class="nav-bar-grid">
             <button class="btn-nav-card active" id="nav-btn-tab1" onclick="switchMainTab('tab1')">
                 <div class="nav-card-num nav-num-1">1</div>
-                <div class="nav-card-text"><strong>TRANG CHỦ</strong><small>Thông báo & Sơ đồ</small></div>
+                <div class="nav-card-text"><strong>TRANG CHỦ</strong><small>Tin tức & Sơ đồ</small></div>
             </button>
             <button class="btn-nav-card" id="nav-btn-tab2" onclick="switchMainTab('tab2')">
                 <div class="nav-card-num nav-num-2">2</div>
-                <div class="nav-card-text"><strong>TỔNG HỢP</strong><small>Bảng điểm thi đua</small></div>
+                <div class="nav-card-text"><strong>TỔNG HỢP</strong><small>Bảng điểm</small></div>
             </button>
             <button class="btn-nav-card" id="nav-btn-tab3" onclick="switchMainTab('tab3')">
                 <div class="nav-card-num nav-num-3">3</div>
-                <div class="nav-card-text"><strong>NHẬP ĐIỂM</strong><small>Tổ trưởng / Lớp trưởng</small></div>
+                <div class="nav-card-text"><strong>NHẬP LIỆU</strong><small>Chấm điểm thi đua</small></div>
             </button>
-            <button class="btn-nav-card" id="nav-btn-tab4" onclick="requireTeacherAuth()">
+            <button class="btn-nav-card" id="nav-btn-tab4" onclick="switchMainTab('tab4')">
                 <div class="nav-card-num nav-num-4">4</div>
+                <div class="nav-card-text"><strong>TRỰC NHẬT</strong><small>Phân công LĐ</small></div>
+            </button>
+            <button class="btn-nav-card" id="nav-btn-tab5" onclick="requireTeacherAuth()">
+                <div class="nav-card-num nav-num-5">5</div>
                 <div class="nav-card-text"><strong>QUẢN TRỊ</strong><small>Dành cho GVCN</small></div>
             </button>
         </div>
@@ -160,9 +168,20 @@
                     <i class="fa-solid fa-scale-balanced"></i> XEM QUY CHẾ CHẤM ĐIỂM THI ĐUA CHI TIẾT
                 </button>
 
-                <div style="margin-bottom: 16px;">
+                <div style="margin-bottom: 14px;">
                     <h4 style="color:#1e3a8a; font-size:0.95rem; margin-bottom:8px; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px;"><i class="fa-solid fa-bullhorn"></i> BẢNG TIN & THÔNG BÁO LỚP</h4>
                     <div id="homeroom-announcements-container" style="display:flex; flex-direction:column;"></div>
+                </div>
+
+                <!-- BẢNG PHÂN CÔNG TRỰC NHẬT THEO NGÀY -->
+                <div style="background:#f0fdfa; border:1.5px solid #14b8a6; padding:12px; border-radius:10px; margin-bottom:14px; box-shadow:0 2px 6px rgba(20, 184, 166, 0.1);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+                        <h4 style="color:#0f766e; font-size:0.95rem; margin:0;"><i class="fa-solid fa-broom"></i> PHÂN CÔNG TRỰC NHẬT <span id="public-duty-week-label"></span></h4>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <select id="public-duty-week-select" onchange="renderPublicDuty()" style="padding:4px 8px; border-radius:6px; border:1px solid #14b8a6; font-weight:700; color:#0f766e; font-size:0.75rem; background:#fff;"></select>
+                        </div>
+                    </div>
+                    <div id="public-duty-list" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
                 </div>
 
                 <div style="background:#fff; border:1.5px solid #0ea5e9; padding:12px; border-radius:10px; margin-bottom:14px; box-shadow:0 2px 6px rgba(14, 165, 233, 0.1);">
@@ -185,7 +204,7 @@
                 <!-- SƠ ĐỒ LỚP -->
                 <div style="background:#fff; border:1.5px solid #3b82f6; padding:12px; border-radius:10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
-                        <h4 style="color:#1e3a8a; font-size:0.95rem; margin:0;"><i class="fa-solid fa-map-location-dot"></i> SƠ ĐỒ VỊ TRÍ NGỒI (4 DÃY - 4 TỔ)</h4>
+                        <h4 style="color:#1e3a8a; font-size:0.95rem; margin:0;"><i class="fa-solid fa-map-location-dot"></i> SƠ ĐỒ VỊ TRÍ NGỒI (4 DÃY - BÀN ĐÔI)</h4>
                         <div style="display:flex; gap:6px;">
                             <span id="seating-week-label" style="background:#eff6ff; color:#1e40af; padding:4px 8px; border-radius:6px; font-weight:700; font-size:0.75rem; border:1px solid #bfdbfe;">Đang xem: Tuần 1</span>
                             <select id="seating-month-select" onchange="updateSeatingWeekOptions()" style="padding: 4px; border-radius: 6px; font-weight: 700; border: 1px solid #3b82f6; width:auto;"></select>
@@ -232,7 +251,7 @@
             </div>
         </div>
 
-        <!-- TAB 3: NHẬP ĐIỂM -->
+        <!-- TAB 3: NHẬP ĐIỂM THI ĐUA -->
         <div id="panel-tab3" class="view-panel">
             <div class="card">
                 <div style="background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 10px; padding: 14px;">
@@ -246,8 +265,8 @@
                     </div>
 
                     <div class="input-control-bar" style="margin-bottom: 12px;">
-                        <label style="font-weight: 700; color: #9f1239;">Vai trò:</label>
-                        <select id="select-role-type" onchange="onRoleChange()" style="padding: 6px; border-radius: 6px; border: 1px solid #fecdd3; width:auto;">
+                        <label style="font-weight: 700; color: #9f1239;">Vai trò của bạn:</label>
+                        <select id="select-role-type" onchange="onRoleChange()" style="padding: 6px; border-radius: 6px; border: 1px solid #fecdd3; width:auto; font-weight:bold;">
                             <option value="totruong">Tổ trưởng</option>
                             <option value="loptruong">Lớp trưởng</option>
                         </select>
@@ -257,7 +276,7 @@
                                 <option value="1">Tổ 1</option><option value="2">Tổ 2</option><option value="3">Tổ 3</option><option value="4" selected>Tổ 4</option>
                             </select>
                         </div>
-                        <input type="password" id="group-pass-input" style="padding: 6px; border-radius: 6px; border: 1px solid #fecdd3; width: 100px;">
+                        <input type="password" id="group-pass-input" placeholder="Mật khẩu..." style="padding: 6px; border-radius: 6px; border: 1px solid #fecdd3; width: 110px;">
                         <button class="btn-action" onclick="verifyAuthAndRender()" style="background:#e11d48; padding: 6px 14px;"><i class="fa-solid fa-key"></i> Mở khóa</button>
                     </div>
 
@@ -267,8 +286,30 @@
             </div>
         </div>
 
-        <!-- TAB 4: QUẢN TRỊ -->
+        <!-- TAB 4: PHÂN CÔNG TRỰC NHẬT -->
         <div id="panel-tab4" class="view-panel">
+            <div class="card">
+                <div style="background: #f0fdfa; border: 1.5px solid #5eead4; border-radius: 10px; padding: 14px;">
+                    <h3 style="font-size: 0.95rem; color: #0f766e; margin-bottom: 12px;"><i class="fa-solid fa-broom"></i> PHÂN CÔNG TRỰC NHẬT (LỚP PHÓ LAO ĐỘNG)</h3>
+                    
+                    <div class="input-control-bar" style="margin-bottom: 10px; background:#f0fdf4; border-color:#86efac;">
+                        <label style="font-weight: 700; color: #166534;">Chọn tuần phân công:</label>
+                        <select id="duty-week-select" onchange="resetDutyAuth()" style="padding: 6px; border-radius: 6px; border: 1px solid #86efac; width:auto; font-weight:bold;"></select>
+                    </div>
+
+                    <div class="input-control-bar" style="margin-bottom: 12px; background:#f0fdf4; border-color:#86efac;">
+                        <label style="font-weight: 700; color: #166534;">Mật khẩu Lớp phó LĐ:</label>
+                        <input type="password" id="duty-pass-input" placeholder="Mật khẩu..." style="padding: 6px; border-radius: 6px; border: 1px solid #86efac; width: 130px;">
+                        <button class="btn-action" onclick="verifyDutyAuth()" style="background:#0d9488; padding: 6px 14px;"><i class="fa-solid fa-unlock"></i> Đăng nhập</button>
+                    </div>
+
+                    <div id="duty-entry-container" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: QUẢN TRỊ -->
+        <div id="panel-tab5" class="view-panel">
             <div class="card">
                 <div style="background:#eff6ff; border:1.5px solid #3b82f6; padding:12px; border-radius:10px; margin-bottom:14px;">
                     <h4 style="color:#1e40af; font-size:0.95rem; margin-bottom:10px;"><i class="fa-solid fa-gears"></i> CẤU HÌNH HỆ THỐNG</h4>
@@ -446,7 +487,7 @@
         </div>
     </div>
 
-    <!-- MODAL KHÓA BẢO MẬT -->
+    <!-- MODAL KHÓA BẢO MẬT QUẢN TRỊ -->
     <div class="modal-overlay" id="authModal">
         <div class="auth-card" style="text-align: center; max-width: 350px;">
             <div style="font-size:2.5rem; color:#ea580c; margin-bottom:10px;"><i class="fa-solid fa-shield-halved"></i></div>
@@ -522,7 +563,7 @@
         const STATE = {
             students: [...DEFAULT_STUDENTS_10A3],
             positions: { 24: "Lớp trưởng", 6: "Bí thư", 12: "Lớp phó", 18: "Lớp phó", 1: "Tổ trưởng", 7: "Tổ trưởng", 13: "Tổ trưởng", 19: "Tổ trưởng" },
-            emulation: {}, map: {}, notices: [],
+            emulation: {}, map: {}, notices: [], duty: {}, 
             config: {
                 schoolName: "Trường THPT Tân Yên số 2",
                 className: "Lớp 10A3", 
@@ -534,6 +575,7 @@
         };
 
         let isTeacherLoggedIn = false;
+        let tempDutyObj = {};
 
         window.onload = function() {
             try {
@@ -549,6 +591,7 @@
                         if(data.emulation) STATE.emulation = JSON.parse(data.emulation);
                         if(data.map) STATE.map = JSON.parse(data.map);
                         if(data.notices) STATE.notices = JSON.parse(data.notices);
+                        if(data.duty) STATE.duty = JSON.parse(data.duty);
                         if(data.config) STATE.config = JSON.parse(data.config);
                     } else { initDefaultMap(); }
                     buildUI();
@@ -586,6 +629,7 @@
                 renderAdminStudentManager();
                 renderAnnouncements();
                 renderAdminAnnouncementsManager();
+                renderPublicDuty();
             } catch(e) {
                 console.error("Lỗi khi tải giao diện:", e);
             }
@@ -660,6 +704,15 @@
                         break;
                     }
                 }
+                let publicDutySelect = document.getElementById('public-duty-week-select');
+                if(publicDutySelect && publicDutySelect.querySelector(`option[value="${targetWeek}"]`)) {
+                    publicDutySelect.value = targetWeek;
+                }
+                let dutyWeekSelect = document.getElementById('duty-week-select');
+                if(dutyWeekSelect && dutyWeekSelect.querySelector(`option[value="${targetWeek}"]`)) {
+                    dutyWeekSelect.value = targetWeek;
+                    resetDutyAuth();
+                }
             }
         }
 
@@ -680,6 +733,8 @@
             for(let i=1; i<=35; i++) wHtml += `<option value="Tuần ${i}">Tuần ${i}</option>`;
             document.getElementById("public-detail-week-select").innerHTML = wHtml;
             document.getElementById("auto-report-week").innerHTML = wHtml;
+            document.getElementById("public-duty-week-select").innerHTML = wHtml;
+            document.getElementById("duty-week-select").innerHTML = wHtml;
 
             updateSummaryWeekOptions();
             updateInputWeekOptions();
@@ -729,17 +784,19 @@
             document.getElementById("panel-" + tabId).classList.add("active");
             document.getElementById("nav-btn-" + tabId).classList.add("active");
             resetInputAuth();
-            if(tabId === 'tab1') renderSeatingMap();
+            resetDutyAuth();
+            if(tabId === 'tab1') { renderSeatingMap(); renderPublicDuty(); }
             if(tabId === 'tab2') renderPublicSummaryTable();
             if(tabId === 'tab3') autoSelectCurrentWeek(); 
-            if(tabId === 'tab4' && isTeacherLoggedIn) {
+            if(tabId === 'tab4') { autoSelectCurrentWeek(); }
+            if(tabId === 'tab5' && isTeacherLoggedIn) {
                 renderAdminStudentManager(); renderAdminSeatingMap(); renderAdminAnnouncementsManager();
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         window.requireTeacherAuth = function() {
-            if (isTeacherLoggedIn) switchMainTab('tab4');
+            if (isTeacherLoggedIn) switchMainTab('tab5');
             else document.getElementById("authModal").classList.add("open");
         }
 
@@ -747,7 +804,7 @@
             if (document.getElementById("admin-pass-input").value === "gv2026") {
                 isTeacherLoggedIn = true;
                 document.getElementById("authModal").classList.remove("open");
-                switchMainTab('tab4');
+                switchMainTab('tab5');
             } else alert("Sai mật khẩu!");
         }
 
@@ -788,7 +845,7 @@
 
         window.exportToCSV = function() {
             let activeTab = document.querySelector(".view-panel.active").id;
-            let tableId = (activeTab === "panel-tab4") ? "monthly-summary-tbody" : "public-summary-tbody";
+            let tableId = (activeTab === "panel-tab5") ? "monthly-summary-tbody" : "public-summary-tbody";
             let tbody = document.getElementById(tableId);
             if (!tbody || tbody.innerText.includes("Bấm")) return alert("Vui lòng xem kết quả trước khi xuất!");
 
@@ -973,7 +1030,8 @@
         }
 
         window.onRoleChange = function() {
-            document.getElementById("group-select-wrapper").style.display = (document.getElementById("select-role-type").value === 'totruong') ? 'flex' : 'none';
+            const role = document.getElementById("select-role-type").value;
+            document.getElementById("group-select-wrapper").style.display = (role === 'totruong') ? 'flex' : 'none';
             resetInputAuth();
         }
 
@@ -981,6 +1039,13 @@
             document.getElementById("group-pass-input").value = "";
             document.getElementById("group-member-entry-container").style.display = "none";
             document.getElementById("lock-status-alert").style.display = "none";
+        }
+
+        function resetDutyAuth() {
+            let passInput = document.getElementById("duty-pass-input");
+            let container = document.getElementById("duty-entry-container");
+            if(passInput) passInput.value = "";
+            if(container) container.style.display = "none";
         }
 
         function getWeekDeadlines(weekNum) {
@@ -1016,7 +1081,9 @@
             let isLocked = today > lockDeadline;
 
             let weekData = STATE.emulation[selectedWeekStr] || {};
-            let isSubmitted = (role === 'loptruong') ? weekData['loptruong_submitted'] : weekData['to' + groupId + '_submitted'];
+            let isSubmitted = false;
+            if(role === 'loptruong') isSubmitted = weekData['loptruong_submitted'];
+            else if(role === 'totruong') isSubmitted = weekData['to' + groupId + '_submitted'];
 
             let alertBox = document.getElementById("lock-status-alert");
             alertBox.style.display = "block";
@@ -1049,6 +1116,204 @@
             }
 
             renderInputPanel(role === 'loptruong' ? null : groupId, isLocked);
+        }
+
+        window.verifyDutyAuth = function() {
+            const pass = document.getElementById("duty-pass-input").value.trim();
+            const weekStr = document.getElementById("duty-week-select").value;
+            
+            if (pass !== "laodong") {
+                alert("Mật khẩu Lớp phó Lao động không đúng! (Mặc định: laodong)");
+                return;
+            }
+            
+            let weekNum = parseInt(weekStr.replace("Tuần ", ""));
+            let { lockDeadline } = getWeekDeadlines(weekNum);
+            let isLocked = new Date() > lockDeadline;
+            
+            renderDutyInputPanel(isLocked);
+        }
+
+        // HÀM HIỂN THỊ PHÂN CÔNG TRỰC NHẬT NGOÀI TRANG CHỦ
+        window.renderPublicDuty = function() {
+            let week = document.getElementById("public-duty-week-select").value;
+            let lbl = document.getElementById("public-duty-week-label");
+            if(lbl) lbl.innerText = "- " + week;
+            let dutyData = STATE.duty[week] || {};
+            let container = document.getElementById("public-duty-list");
+            if(!container) return;
+            
+            if(Array.isArray(dutyData)) dutyData = {}; 
+
+            if(Object.keys(dutyData).length === 0) {
+                container.innerHTML = `<div style="font-size:0.85rem; color:#0f766e; font-style:italic; padding:4px;">Chưa có danh sách trực nhật cho ${week}.</div>`;
+            } else {
+                let days = [
+                    {key: 'T2', label: 'Thứ 2'}, {key: 'T3', label: 'Thứ 3'}, {key: 'T4', label: 'Thứ 4'},
+                    {key: 'T5', label: 'Thứ 5'}, {key: 'T6', label: 'Thứ 6'}, {key: 'T7', label: 'Thứ 7'}
+                ];
+                let html = `<div style="display:flex; flex-direction:column; gap:8px; width:100%;">`;
+                
+                days.forEach(d => {
+                    let stts = dutyData[d.key] || [];
+                    if(stts.length > 0) {
+                        let names = stts.map(stt => {
+                            let name = STATE.students[stt-1];
+                            return `<span style="display:inline-block; background:#ccfbf1; padding:4px 8px; border-radius:12px; margin:2px 4px 2px 0; border:1px solid #5eead4; white-space:nowrap;"><i class="fa-solid fa-user" style="font-size:0.7rem; margin-right:3px;"></i> ${name}</span>`;
+                        }).join('');
+                        html += `
+                        <div style="display:flex; align-items:stretch; background:#fff; border:1px solid #99f6e4; border-radius:6px; overflow:hidden;">
+                            <div style="background:#0f766e; color:#fff; font-weight:800; font-size:0.85rem; padding:8px; width:70px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${d.label}</div>
+                            <div style="padding:6px 8px; font-size:0.85rem; color:#115e59; font-weight:600; flex:1; display:flex; flex-wrap:wrap; align-items:center;">${names}</div>
+                        </div>`;
+                    }
+                });
+                html += `</div>`;
+                container.innerHTML = html;
+            }
+        }
+
+        // HÀM HIỂN THỊ BẢNG ĐIỀN DANH TRỰC NHẬT TỰ DO DÀNH CHO LỚP PHÓ LĐ
+        window.renderDutyInputPanel = function(isLocked) {
+            const week = document.getElementById("duty-week-select").value;
+            const container = document.getElementById("duty-entry-container");
+            
+            tempDutyObj = STATE.duty[week] || {};
+            if(Array.isArray(tempDutyObj)) tempDutyObj = {};
+            ['T2','T3','T4','T5','T6','T7'].forEach(d => {
+                if(!tempDutyObj[d]) tempDutyObj[d] = [];
+            });
+
+            let html = `<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-start; margin-bottom:16px;">
+                <div style="flex:1; min-width:300px; background:#fff; border:1.5px solid #fde047; padding:12px; border-radius:10px;">
+                    <h4 style="color:#b45309; font-size:0.95rem; margin-bottom:8px;"><i class="fa-solid fa-list-ol"></i> GỢI Ý: DANH SÁCH VI PHẠM</h4>
+                    <div style="display:flex; gap:6px; margin-bottom:8px;">
+                        <select id="duty-suggest-week" style="padding:4px; border-radius:6px; border:1px solid #fde047; font-size:0.8rem;"></select>
+                        <button class="btn-action" style="background:#d97706; padding:4px 10px; font-size:0.75rem;" onclick="showViolators()"><i class="fa-solid fa-filter"></i> Lọc vi phạm</button>
+                    </div>
+                    <div id="duty-suggest-list" style="max-height:200px; overflow-y:auto; font-size:0.8rem; background:#fefce8; padding:8px; border-radius:6px; border:1px dashed #fde047; line-height:1.5;">
+                        Bấm Lọc để xem danh sách vi phạm...
+                    </div>
+                </div>
+            </div>`;
+
+            html += `<h4 style="font-weight:800; color:#0f766e; margin-bottom:12px; font-size:1.05rem;"><i class="fa-solid fa-broom"></i> Phân công trực nhật (${week})</h4>`;
+            html += `<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:10px; margin-bottom:16px;" id="duty-days-grid"></div>`;
+            
+            if(!isLocked) {
+                html += `<button class="btn-action" style="width:100%; background:#0d9488; font-size:1.05rem; padding:12px;" onclick="finalizeDuty()">
+                            <i class="fa-solid fa-floppy-disk"></i> LƯU PHÂN CÔNG TẤT CẢ CÁC NGÀY
+                        </button>`;
+            } else {
+                html += `<div style="color:#b91c1c; font-weight:bold; text-align:center; padding:10px; background:#fee2e2; border-radius:8px;">Hệ thống đã khóa, không thể thay đổi phân công!</div>`;
+            }
+            
+            container.innerHTML = html;
+            container.style.display = "block";
+
+            let wHtml = "";
+            for(let i=1; i<=35; i++) wHtml += `<option value="Tuần ${i}">Tuần ${i}</option>`;
+            document.getElementById("duty-suggest-week").innerHTML = wHtml;
+            
+            let currentWNum = parseInt(week.replace("Tuần ",""));
+            let suggestWNum = currentWNum > 1 ? currentWNum - 1 : currentWNum;
+            document.getElementById("duty-suggest-week").value = "Tuần " + suggestWNum;
+            
+            renderDutyDaysGrid(isLocked);
+        }
+
+        window.renderDutyDaysGrid = function(isLocked) {
+            let grid = document.getElementById("duty-days-grid");
+            if(!grid) return;
+            
+            let days = [
+                {key: 'T2', label: 'Thứ 2'}, {key: 'T3', label: 'Thứ 3'}, {key: 'T4', label: 'Thứ 4'},
+                {key: 'T5', label: 'Thứ 5'}, {key: 'T6', label: 'Thứ 6'}, {key: 'T7', label: 'Thứ 7'}
+            ];
+
+            let studentOptions = `<option value="">-- Chọn học sinh --</option>`;
+            STATE.students.forEach((name, idx) => {
+                studentOptions += `<option value="${idx+1}">${idx+1}. ${name}</option>`;
+            });
+
+            let html = "";
+            days.forEach(d => {
+                let assigned = tempDutyObj[d.key] || [];
+                let tags = assigned.map(stt => {
+                    let name = STATE.students[stt-1];
+                    let closeBtn = isLocked ? "" : `<span style="cursor:pointer; margin-left:4px; font-weight:bold; color:#ef4444; padding:0 2px;" onclick="removeDutyStt('${d.key}', ${stt})">×</span>`;
+                    return `<span style="display:inline-flex; align-items:center; background:#ccfbf1; padding:4px 8px; border-radius:12px; margin:2px; border:1px solid #5eead4; font-size:0.75rem; color:#115e59; font-weight:600;">${name} ${closeBtn}</span>`;
+                }).join('');
+
+                let addControls = isLocked ? "" : `
+                    <div style="display:flex; gap:4px; margin-top:8px;">
+                        <select id="add-duty-${d.key}" style="flex:1; padding:4px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;">${studentOptions}</select>
+                        <button class="btn-action" style="background:#0d9488; padding:4px 8px; font-size:0.7rem;" onclick="addDutyStt('${d.key}')"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                `;
+
+                html += `
+                <div style="background:#f8fafc; border:1px solid #94a3b8; border-radius:8px; padding:10px; display:flex; flex-direction:column;">
+                    <div style="font-weight:800; color:#0f766e; margin-bottom:8px; border-bottom:1px solid #cbd5e1; padding-bottom:4px;"><i class="fa-regular fa-calendar"></i> ${d.label} (${assigned.length} bạn)</div>
+                    <div style="flex:1; min-height:40px; margin-bottom:6px;">${tags || '<span style="color:#94a3b8; font-size:0.75rem; font-style:italic;">Chưa phân công...</span>'}</div>
+                    ${addControls}
+                </div>`;
+            });
+            grid.innerHTML = html;
+        }
+
+        window.addDutyStt = function(dayKey) {
+            let sel = document.getElementById("add-duty-" + dayKey);
+            if(!sel || !sel.value) return;
+            let stt = parseInt(sel.value);
+            if(!tempDutyObj[dayKey].includes(stt)) {
+                tempDutyObj[dayKey].push(stt);
+                renderDutyDaysGrid(false);
+            }
+        }
+
+        window.removeDutyStt = function(dayKey, stt) {
+            tempDutyObj[dayKey] = tempDutyObj[dayKey].filter(s => s !== stt);
+            renderDutyDaysGrid(false);
+        }
+
+        window.showViolators = function() {
+            let week = document.getElementById("duty-suggest-week").value;
+            let dataWeek = STATE.emulation[week] || {};
+            let listContainer = document.getElementById("duty-suggest-list");
+            
+            let violators = [];
+            STATE.students.forEach((name, idx) => {
+                let stt = idx + 1;
+                let data = dataWeek[stt] || {};
+                let errDetails = [];
+                ERROR_TYPES.forEach(err => {
+                    let val = data[err.key] || 0;
+                    if(val > 0 && err.pen > 0) errDetails.push(`${err.label} (${val})`); 
+                });
+                if(errDetails.length > 0) {
+                    violators.push(`<div style="margin-bottom:4px; padding-bottom:4px; border-bottom:1px dashed #fef08a;"><strong>${stt}. ${name}</strong> <span style="color:#dc2626;">[${errDetails.join(', ')}]</span></div>`);
+                }
+            });
+            
+            if(violators.length === 0) {
+                listContainer.innerHTML = `<div style="color:#16a34a; font-weight:bold;">Tuyệt vời! ${week} không có ai vi phạm.</div>`;
+            } else {
+                listContainer.innerHTML = violators.join('');
+            }
+        }
+
+        window.finalizeDuty = function() {
+            const week = document.getElementById("duty-week-select").value;
+            let count = 0;
+            Object.keys(tempDutyObj).forEach(k => count += tempDutyObj[k].length);
+            
+            if(!confirm(`Xác nhận lưu phân công trực nhật ${week} (Tổng cộng ${count} lượt trực)?`)) return;
+
+            STATE.duty[week] = tempDutyObj;
+            saveData('duty', STATE.duty);
+            renderPublicDuty();
+            alert("Đã lưu phân công trực nhật thành công và hiển thị ra Bảng tin ngoài Trang chủ!");
         }
 
         window.finalizeReport = function(groupIdArg) {
