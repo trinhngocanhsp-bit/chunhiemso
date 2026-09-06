@@ -2097,13 +2097,47 @@ window.verifyDutyAuth = function() {
         let html = `<div style="font-weight:bold; color:#0f766e; margin-bottom:10px; font-size:0.85rem; border-bottom:1px dashed #cbd5e1; padding-bottom:6px;">Đang phân công cho: <span>${week}</span></div>`;
         
         html += `<div style="margin-bottom:12px;">
-            <button type="button" onclick="window.toggleWeeklyErrorStats('${safeWeek}')" style="background:#0284c7; color:#fff; border:none; padding:7px 12px; border-radius:6px; font-size:0.78rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 1px 2px rgba(0,0,0,0.1);">
-                <i class="fa-solid fa-chart-pie"></i> Thống kê lỗi ${week} để phân công
-            </button>
-            <div id="weekly-error-box-${safeWeek}" style="display:none; margin-top:6px; max-height:120px; overflow-y:auto; border:1px solid #bae6fd; border-radius:6px; background:#f0f9ff; padding:6px;">
-                <div style="font-size:0.72rem; color:#0369a1; font-style:italic; text-align:center;">Đang tải dữ liệu lỗi...</div>
-            </div>
-        </div>`;
+            <div style="font-weight:600; color:#b91c1c; margin-bottom:3px; font-size:0.7rem;"><i class="fa-solid fa-triangle-exclamation"></i> Gợi ý học sinh vi phạm nhiều:</div>
+            <div style="max-height:75px; overflow-y:auto; border:1px solid #fca5a5; border-radius:6px; background:#fef2f2; padding:3px 5px;">
+                <table style="width:100%; border-collapse:collapse; font-size:0.68rem;">
+                    <tr style="background:#fee2e2; color:#991b1b; font-weight:bold;"><th style="border:1px solid #fecaca; padding:2px 4px; text-align:left;">Học sinh</th><th style="border:1px solid #fecaca; padding:2px 4px; text-align:center; width:45px;">Tổng lỗi</th></tr>`;
+        
+        let errorCounts = {};
+        if (typeof STATE !== 'undefined' && STATE.emulation && STATE.students) {
+            Object.keys(STATE.emulation).forEach(w => {
+                let wData = STATE.emulation[w];
+                if (wData) {
+                    Object.keys(wData).forEach(stt => {
+                        let sName = STATE.students[stt - 1];
+                        if (sName) {
+                            let sData = wData[stt];
+                            let totalErr = 0;
+                            if (sData && typeof ERROR_TYPES !== 'undefined') {
+                                ERROR_TYPES.forEach(err => {
+                                    let cnt = Number(sData[err.key]) || 0;
+                                    if (cnt > 0 && err.pen !== 'custom_add') {
+                                        totalErr += cnt;
+                                    }
+                                });
+                            }
+                            if (totalErr > 0) {
+                                errorCounts[sName] = (errorCounts[sName] || 0) + totalErr;
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        
+        let sortedErrors = Object.keys(errorCounts).sort((a, b) => errorCounts[b] - errorCounts[a]);
+        if (sortedErrors.length === 0) {
+            html += `<tr><td colspan="2" style="border:1px solid #fecaca; padding:2px 4px; text-align:center; font-style:italic; color:#7f1d1d;">Không có học sinh vi phạm</td></tr>`;
+        } else {
+            sortedErrors.forEach(sName => {
+                html += `<tr><td style="border:1px solid #fecaca; padding:2px 4px;">${sName}</td><td style="border:1px solid #fecaca; padding:2px 4px; text-align:center; font-weight:bold; color:#b91c1c;">${errorCounts[sName]}</td></tr>`;
+            });
+        }
+        html += `</table></div></div>`;
 
         html += `<div style="font-weight:bold; color:#0f766e; margin-bottom:8px; font-size:0.8rem;"><i class="fa-solid fa-calendar-days"></i> Phân công lịch trực:</div>`;
 
@@ -2139,7 +2173,7 @@ window.verifyDutyAuth = function() {
                 
                 if (typeof dayData === 'string') {
                     members = [dayData];
-                } else if (typeof dayData === 'object') {
+                } else if (typeof dayData === 'object' && dayData !== null) {
                     leader = dayData.leader || "";
                     if (Array.isArray(dayData.members)) members = dayData.members;
                     else if (dayData.member) members = [dayData.member];
@@ -2172,55 +2206,17 @@ window.verifyDutyAuth = function() {
     }
 };
 
-window.toggleWeeklyErrorStats = function(safeWeek) {
-    let box = document.getElementById(`weekly-error-box-${safeWeek}`);
-    if(!box) return;
+window.addDutyMemberSlot = function(week, dayKey) {
+    const safeWeek = week.replace(/\s+/g, '');
+    let containerList = document.getElementById(`duty-members-list-${safeWeek}-${dayKey}`);
+    if (!containerList) return;
     
-    if(box.style.display === "block") {
-        box.style.display = "none";
-        return;
-    }
-    box.style.display = "block";
-    
-    const weekSelect = document.getElementById("duty-week-select");
-    const week = weekSelect ? weekSelect.value : "Tuần 1";
-    
-    let errorCounts = {};
-    if (typeof STATE !== 'undefined' && STATE.emulation && STATE.emulation[week] && STATE.students) {
-        let wData = STATE.emulation[week];
-        Object.keys(wData).forEach(stt => {
-            let sName = STATE.students[stt - 1];
-            if (sName) {
-                let sData = wData[stt];
-                let totalErr = 0;
-                if (sData && typeof ERROR_TYPES !== 'undefined') {
-                    ERROR_TYPES.forEach(err => {
-                        let cnt = Number(sData[err.key]) || 0;
-                        if (cnt > 0 && err.pen !== 'custom_add') {
-                            totalErr += cnt;
-                        }
-                    });
-                }
-                if (totalErr > 0) {
-                    errorCounts[sName] = totalErr;
-                }
-            }
-        });
-    }
-    
-    let html = `<table style="width:100%; border-collapse:collapse; font-size:0.68rem;">
-        <tr style="background:#bae6fd; color:#0369a1; font-weight:bold;"><th style="border:1px solid #7dd3fc; padding:2px 4px; text-align:left;">Học sinh mắc lỗi trong ${week}</th><th style="border:1px solid #7dd3fc; padding:2px 4px; text-align:center; width:45px;">Số lỗi</th></tr>`;
-    
-    let sortedErrors = Object.keys(errorCounts).sort((a, b) => errorCounts[b] - errorCounts[a]);
-    if (sortedErrors.length === 0) {
-        html += `<tr><td colspan="2" style="border:1px solid #7dd3fc; padding:2px 4px; text-align:center; font-style:italic; color:#0369a1;">Tuyệt vời! Tuần này không có học sinh nào vi phạm.</td></tr>`;
-    } else {
-        sortedErrors.forEach(sName => {
-            html += `<tr><td style="border:1px solid #7dd3fc; padding:2px 4px; color:#0f172a; font-weight:600;">${sName}</td><td style="border:1px solid #7dd3fc; padding:2px 4px; text-align:center; font-weight:bold; color:#b91c1c;">${errorCounts[sName]}</td></tr>`;
-        });
-    }
-    html += `</table>`;
-    box.innerHTML = html;
+    let studentOptions = window._tempStudentOptions || '<option value="">-- Chọn học sinh --</option>';
+    let div = document.createElement('div');
+    div.style.cssText = "display:flex; gap:6px; align-items:center;";
+    div.innerHTML = `<select class="duty-member-sel-${safeWeek}-${dayKey}" style="flex:1; padding:6px; border:1px solid #cbd5e1; border-radius:4px; font-size:0.8rem; background:#fff;">${studentOptions}</select>
+        <button type="button" onclick="this.parentElement.remove()" style="background:#ef4444; color:#fff; border:none; padding:6px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>`;
+    containerList.appendChild(div);
 };
 // ================= KHÔI PHỤC TÍNH NĂNG NHẮN TIN ZALO =================
 window.renderAdminZaloSummary = function() {
