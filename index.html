@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -554,7 +556,8 @@
         </div>
     </div>
 <script>
-        const DEFAULT_STUDENTS_10A4 = [
+        window.errorCounts = {};
+	const DEFAULT_STUDENTS_10A4 = [
             "Nguyễn Huyền Anh", "Hoàng Trung Hiếu", "Dương Ngọc Nhi", "Dương Ngọc Sơn", "Lê Minh Công",
             "Nguyễn Thị Huyền Trang", "Dương Nguyễn Phương Anh", "Triệu Gia Bảo", "Nguyễn Duy Biên",
             "Nguyễn Văn Dũng", "Nguyễn Văn Duy", "Tạ Văn Duy", "Nguyễn Văn Đồng", "Tạ Trung Đức",
@@ -1393,20 +1396,13 @@
             }
         }
 
-        function getWeekDeadlines(weekNum) {
-            let start = STATE.config.startDate ? new Date(STATE.config.startDate) : new Date();
-            
-            if (STATE.config.deadlineScope === 'semester') {
-                let targetWeek = weekNum <= 18 ? 18 : 35;
-                let sub = new Date(start.getTime() + (targetWeek - 1) * 7 * 86400000 + (STATE.config.deadlineDay || 1) * 86400000);
-                let lock = new Date(sub.getTime() + 7 * 86400000);
-                return { submitDeadline: sub, lockDeadline: lock };
-            }
-            
-            let sub = new Date(start.getTime() + (weekNum - 1) * 7 * 86400000 + 4 * 86400000);
-            let lock = new Date(sub.getTime() + 5 * 86400000);
-            return { submitDeadline: sub, lockDeadline: lock };
-        }
+      function getWeekDeadlines(weekNum) {
+    let start = STATE.config.startDate ? new Date(STATE.config.startDate) : new Date();
+
+    let sub = new Date(start.getTime() + (weekNum - 1) * 7 * 86400000 + 4 * 86400000);
+    let lock = new Date(sub.getTime() + 5 * 86400000);
+    return { submitDeadline: sub, lockDeadline: lock };
+}
 
         window.verifyAuthAndRender = function() {
             let role = document.getElementById("select-role-type").value;
@@ -1631,9 +1627,83 @@ window.deleteStudent = function(index) {
     if(typeof window.populateSelects === 'function') window.populateSelects();
     alert("Đã xóa học sinh thành công!");
 };
+window.importBulkStudents = function(isReplace) {
+    let rawText = document.getElementById("bulk-student-input")?.value.trim() || "";
+    if(!rawText) return alert("Vui lòng nhập danh sách học sinh vào khung!");
 
-        window.importBulkStudents = function(r) { alert("Tính năng sẵn sàng!"); }
-        window.addNewStudent = function() { alert("Đã thêm!"); }
+    let lines = rawText.split("\n");
+    let newStudents = [];
+    let newPhones = isReplace ? {} : {...STATE.phones};
+    let startIndex = isReplace ? 1 : STATE.students.length + 1;
+
+    lines.forEach(line => {
+        let parts = line.trim().split(/\s{2,}|\t/);
+        let name = parts[0] ? parts[0].trim() : "";
+        let phone = parts[1] ? parts[1].trim() : "";
+        
+        if(!name && line.trim()) {
+            let words = line.trim().split(/\s+/);
+            let lastWord = words[words.length - 1];
+            if(/^\d{9,11}$/.test(lastWord)) {
+                phone = lastWord;
+                name = words.slice(0, words.length - 1).join(" ");
+            } else {
+                name = line.trim();
+            }
+        }
+
+        if(name) {
+            newStudents.push(name);
+            if(phone) newPhones[startIndex + newStudents.length - 1] = phone;
+        }
+    });
+
+    if(newStudents.length === 0) return alert("Không đọc được dữ liệu học sinh hợp lệ!");
+
+    if(isReplace) {
+        if(!confirm(`Xác nhận XÓA TẤT CẢ học sinh cũ và thay thế bằng ${newStudents.length} học sinh mới?`)) return;
+        STATE.students = newStudents;
+        STATE.phones = newPhones;
+        STATE.positions = {};
+    } else {
+        STATE.students = STATE.students.concat(newStudents);
+        STATE.phones = newPhones;
+    }
+
+    window.saveData('students', STATE.students);
+    window.saveData('phones', STATE.phones);
+    window.saveData('positions', STATE.positions);
+
+    window.renderAdminStudentManager();
+    if(typeof window.populateSelects === 'function') window.populateSelects();
+    document.getElementById("bulk-student-input").value = "";
+    alert(`Đã nhập thành công ${newStudents.length} học sinh!`);
+};
+
+window.addNewStudent = function() {
+    let nameInput = document.getElementById("new-student-name");
+    let phoneInput = document.getElementById("new-student-phone");
+    let name = nameInput ? nameInput.value.trim() : "";
+    let phone = phoneInput ? phoneInput.value.trim() : "";
+
+    if(!name) return alert("Vui lòng nhập tên học sinh!");
+
+    STATE.students.push(name);
+    let newStt = STATE.students.length;
+    if(phone) {
+        if(!STATE.phones) STATE.phones = {};
+        STATE.phones[newStt] = phone;
+        window.saveData('phones', STATE.phones);
+    }
+
+    window.saveData('students', STATE.students);
+    if(nameInput) nameInput.value = "";
+    if(phoneInput) phoneInput.value = "";
+    
+    window.renderAdminStudentManager();
+    if(typeof window.populateSelects === 'function') window.populateSelects();
+    alert(`Đã thêm học sinh ${name} thành công!`);
+};
         window.delSt = function(i) { STATE.students.splice(i,1); window.renderAdminStudentManager(); }
         window.resetDataToFactory = function() { alert("Đã khôi phục!"); }
         window.renderAdminSeatingMap = function() {}
@@ -1989,18 +2059,27 @@ window.deleteStudent = function(index) {
             }
         }
 
-        window.updateError = function(stt, errKey, delta) {
-            const week = document.getElementById("input-week-select").value;
-            if (!STATE.emulation[week]) STATE.emulation[week] = {};
-            if (!STATE.emulation[week][stt]) STATE.emulation[week][stt] = {};
-            
-            let current = STATE.emulation[week][stt][errKey] || 0;
-            let newVal = current + delta;
-            if (newVal < 0) newVal = 0;
-            
-            STATE.emulation[week][stt][errKey] = newVal;
-            window.verifyAuthAndRender();
+     window.updateError = function(stt, errKey, delta) {
+    const week = document.getElementById("input-week-select").value;
+    if (!STATE.emulation[week]) STATE.emulation[week] = {};
+    if (!STATE.emulation[week][stt]) STATE.emulation[week][stt] = {};
+
+    let current = STATE.emulation[week][stt][errKey] || 0;
+    let newVal = current + delta;
+    if (newVal < 0) newVal = 0;
+
+    STATE.emulation[week][stt][errKey] = newVal;
+    
+    // Gọi hàm gốc của hệ thống để lưu và tính toán dữ liệu
+    window.verifyAuthAndRender();
+
+    // Dùng setTimeout đợi 400 mili-giây để dữ liệu mới kịp ngấm, rồi mới ép bảng thống kê vẽ lại
+    setTimeout(() => {
+        if (typeof window.renderPublicSummaryTable === 'function') {
+            window.renderPublicSummaryTable();
         }
+    }, 400);
+}
 
         window.setExactError = function(stt, errKey, valStr) {
             const week = document.getElementById("input-week-select").value;
@@ -2096,11 +2175,11 @@ window.verifyDutyAuth = function() {
 
         let html = `<div style="font-weight:bold; color:#0f766e; margin-bottom:10px; font-size:0.85rem; border-bottom:1px dashed #cbd5e1; padding-bottom:6px;">Đang phân công cho: <span>${week}</span></div>`;
         
-        html += `<div style="margin-bottom:12px;">
+        /* html += `<div style="margin-bottom:12px;">
             <div style="font-weight:600; color:#b91c1c; margin-bottom:3px; font-size:0.7rem;"><i class="fa-solid fa-triangle-exclamation"></i> Gợi ý học sinh vi phạm nhiều:</div>
             <div style="max-height:75px; overflow-y:auto; border:1px solid #fca5a5; border-radius:6px; background:#fef2f2; padding:3px 5px;">
                 <table style="width:100%; border-collapse:collapse; font-size:0.68rem;">
-                    <tr style="background:#fee2e2; color:#991b1b; font-weight:bold;"><th style="border:1px solid #fecaca; padding:2px 4px; text-align:left;">Học sinh</th><th style="border:1px solid #fecaca; padding:2px 4px; text-align:center; width:45px;">Tổng lỗi</th></tr>`;
+                    <tr style="background:#fee2e2; color:#991b1b; font-weight:bold;"><th style="border:1px solid #fecaca; padding:2px 4px; text-align:left;">Học sinh</th><th style="border:1px solid #fecaca; padding:2px 4px; text-align:center; width:45px;">Tổng lỗi</th></tr>`; */
         
         let errorCounts = {};
         if (typeof STATE !== 'undefined' && STATE.emulation && STATE.students) {
@@ -2129,16 +2208,6 @@ window.verifyDutyAuth = function() {
             });
         }
         
-        let sortedErrors = Object.keys(errorCounts).sort((a, b) => errorCounts[b] - errorCounts[a]);
-        if (sortedErrors.length === 0) {
-            html += `<tr><td colspan="2" style="border:1px solid #fecaca; padding:2px 4px; text-align:center; font-style:italic; color:#7f1d1d;">Không có học sinh vi phạm</td></tr>`;
-        } else {
-            sortedErrors.forEach(sName => {
-                html += `<tr><td style="border:1px solid #fecaca; padding:2px 4px;">${sName}</td><td style="border:1px solid #fecaca; padding:2px 4px; text-align:center; font-weight:bold; color:#b91c1c;">${errorCounts[sName]}</td></tr>`;
-            });
-        }
-        html += `</table></div></div>`;
-
         html += `<div style="font-weight:bold; color:#0f766e; margin-bottom:8px; font-size:0.8rem;"><i class="fa-solid fa-calendar-days"></i> Phân công lịch trực:</div>`;
 
         const days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
@@ -2279,6 +2348,400 @@ window.renderAdminZaloSummary = function() {
                 <td style="padding:8px;">${phoneAction}</td>
             </tr>`;
     });
+};
+// Bổ sung hàm hiển thị lỗi vào bảng tổng hợp sẵn có của tab 2
+window.renderPublicSummaryTable = (function() {
+    const originalFunc = window.renderPublicSummaryTable;
+    return function() {
+        if (typeof originalFunc === 'function') {
+            originalFunc.apply(this, arguments);
+        }
+        
+        try {
+            let tab2 = document.getElementById("panel-tab2");
+            if (!tab2) return;
+            
+            let errorBoxId = "custom-summary-error-box";
+            let errorBox = document.getElementById(errorBoxId);
+            if (!errorBox) {
+                errorBox = document.createElement("div");
+                errorBox.id = errorBoxId;
+                errorBox.style.cssText = "margin-bottom: 15px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 10px;";
+                
+                // Đưa lên vị trí đầu tiên của tab2 (trước cả bảng điểm)
+                let firstCard = tab2.querySelector(".card");
+                if (firstCard) {
+                    tab2.insertBefore(errorBox, firstCard);
+                } else {
+                    tab2.prepend(errorBox);
+                }
+            }
+
+            const weekSelect = document.getElementById("public-week-select");
+            const week = weekSelect ? weekSelect.value : "Tuần 1";
+            const safeWeek = week.replace(/\s+/g, '');
+           
+            // ==========================================
+            // FIX LỖI: Tự động quét và tính toán lại tổng số lỗi từ dữ liệu gốc mỗi khi vẽ bảng
+            // ==========================================
+            let currentErrorCounts = {};
+            let weekData = STATE.emulation[week] || {};
+            Object.keys(weekData).forEach(stt => {
+                let sName = STATE.students[stt - 1];
+                if (sName && weekData[stt]) {
+                    let totalErr = 0;
+                    ERROR_TYPES.forEach(err => {
+                        let cnt = Number(weekData[stt][err.key]) || 0;
+                        // Chỉ cộng những lỗi phạt, bỏ qua các mục cộng điểm
+                        if (cnt > 0 && err.pen !== 'custom_add') {
+                            totalErr += cnt;
+                        }
+                    });
+                    if (totalErr > 0) {
+                        currentErrorCounts[sName] = totalErr;
+                    }
+                }
+            });
+
+            let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <div style="font-weight:bold; color:#b91c1c; font-size:0.85rem;"><i class="fa-solid fa-triangle-exclamation"></i> Thống kê lỗi vi phạm cả lớp (${week})</div>
+                <button type="button" onclick="let b=document.getElementById('err-table-${safeWeek}'); b.style.display = b.style.display==='none'?'block':'none';" style="background:#0284c7; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:0.7rem; cursor:pointer; font-weight:700;"><i class="fa-solid fa-eye"></i> Ẩn/Hiện</button>
+            </div>`;
+            
+            html += `<div id="err-table-${safeWeek}" style="display:block; max-height:150px; overflow-y:auto;"><table style="width:100%; border-collapse:collapse; font-size:0.75rem;">
+                <tr style="background:#fee2e2; color:#991b1b; font-weight:bold;">
+                    <th style="border:1px solid #fecaca; padding:4px; text-align:left;">Học sinh</th>
+                    <th style="border:1px solid #fecaca; padding:4px; text-align:center; width:60px;">Tổng số lỗi</th>
+                </tr>`;
+
+            // Sắp xếp học sinh vi phạm nhiều lên đầu
+            let sortedErrors = Object.keys(currentErrorCounts).sort((a, b) => currentErrorCounts[b] - currentErrorCounts[a]);
+            if (sortedErrors.length === 0) {
+                html += `<tr><td colspan="2" style="border:1px solid #fecaca; padding:6px; text-align:center; font-style:italic; color:#7f1d1d;">Tuần này lớp không có học sinh vi phạm.</td></tr>`;
+            } else {
+                sortedErrors.forEach(sName => {
+                    html += `<tr>
+                        <td style="border:1px solid #fecaca; padding:4px; color:#1e293b;">${sName}</td>
+                        <td style="border:1px solid #fecaca; padding:4px; text-align:center; font-weight:bold; color:#b91c1c;">${currentErrorCounts[sName]}</td>
+                    </tr>`;
+                });
+            }
+            html += `</table></div>`;
+            errorBox.innerHTML = html;
+
+        } catch(e) {
+            console.error("Lỗi hiển thị thống kê lỗi:", e);
+        }
+    };
+})();
+window.autoSelectCurrentWeek = function() {
+    let startDateStr = (STATE && STATE.config && STATE.config.startDate) ? STATE.config.startDate : "2026-09-07";
+    let start = new Date(startDateStr);
+    let today = new Date();
+    
+    // Tính số ngày chênh lệch giữa hôm nay và ngày bắt đầu
+    let diffTime = today.getTime() - start.getTime();
+    let diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
+    
+    // Tính ra số tuần (mỗi tuần 7 ngày, từ 0 trở lên)
+    let currentWeekNum = Math.max(1, Math.floor(diffDays / 7) + 1);
+    
+    // Tự động gán giá trị vào các dropdown chọn tuần trên giao diện
+    let weekSelects = document.querySelectorAll("#input-week-select, #public-week-select, #duty-week-select");
+    weekSelects.forEach(select => {
+        if (select) {
+            let optionVal = "Tuần " + currentWeekNum;
+            // Kiểm tra xem option có tồn tại không, nếu có thì chọn
+            for (let opt of select.options) {
+                if (opt.value === optionVal || opt.text.includes(currentWeekNum)) {
+                    select.value = opt.value;
+                    break;
+                }
+            }
+        }
+    });
+};
+
+// Gọi tự động khi tải trang
+window.addEventListener("DOMContentLoaded", () => {
+    window.autoSelectCurrentWeek();
+});
+
+// Hàm lưu phân công trực nhật từ Tab 4
+window.savedDutyData = function() {
+    const weekSelect = document.getElementById("duty-week-select");
+    const week = weekSelect ? weekSelect.value : "Tuần 1";
+    const safeWeek = week.replace(/\s+/g, '');
+
+    if (!STATE.duty) STATE.duty = {};
+    if (!STATE.duty[week]) STATE.duty[week] = {};
+
+    const days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
+    
+    days.forEach((day, index) => {
+        let dayKey = index + 1;
+        let containerList = document.getElementById(`duty-members-list-${safeWeek}-${dayKey}`);
+        let members = [];
+        if (containerList) {
+            let selects = containerList.querySelectorAll('select');
+            selects.forEach(sel => {
+                if (sel.value) members.push(sel.value);
+            });
+        }
+
+        let leaderElem = document.getElementById(`duty-leader-${safeWeek}-${dayKey}`);
+        let leader = leaderElem ? leaderElem.value : "";
+
+        STATE.duty[week][dayKey] = {
+            members: members,
+            leader: leader
+        };
+    });
+
+    window.saveData('duty', STATE.duty);
+    alert("Đã lưu phân công trực nhật " + week + " thành công!");
+    
+    if (typeof window.renderPublicDuty === 'function') {
+        window.renderPublicDuty();
+    }
+};
+
+// Hàm hiển thị lịch trực ra ngoài Trang chủ (Tab 1)
+// 1. Hàm lưu phân công trực nhật (Đã bọc bảo vệ chống lỗi treo trang)
+window.savedDutyData = function() {
+    try {
+        const weekSelect = document.getElementById("duty-week-select");
+        const week = weekSelect ? weekSelect.value : "Tuần 1";
+        const safeWeek = week.replace(/\s+/g, '');
+
+        if (!STATE.duty) STATE.duty = {};
+        if (!STATE.duty[week]) STATE.duty[week] = {};
+
+        const days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
+        
+        days.forEach((day, index) => {
+            let dayKey = index + 1;
+            let containerList = document.getElementById(`duty-members-list-${safeWeek}-${dayKey}`);
+            let members = [];
+            if (containerList) {
+                let selects = containerList.querySelectorAll('select');
+                selects.forEach(sel => {
+                    if (sel.value) members.push(sel.value);
+                });
+            }
+
+            let leaderElem = document.getElementById(`duty-leader-${safeWeek}-${dayKey}`);
+            let leader = leaderElem ? leaderElem.value : "";
+
+            STATE.duty[week][dayKey] = {
+                members: members,
+                leader: leader
+            };
+        });
+
+        if (typeof window.saveData === 'function') {
+            window.saveData('duty', STATE.duty);
+        }
+        
+        alert("✅ Đã lưu phân công trực nhật " + week + " thành công!");
+        
+        if (typeof window.renderPublicDuty === 'function') {
+            window.renderPublicDuty();
+        }
+    } catch (err) {
+        console.error("Lỗi khi lưu:", err);
+        alert("Có lỗi xảy ra khi lưu, cô kiểm tra lại dữ liệu nhé!");
+    }
+};
+
+// 2. Hàm hiển thị lịch trực ra ngoài Trang chủ (Tab 1) theo hàng dọc, lọc bỏ số thứ tự
+// =========================================================
+// 1. HÀM LƯU DỮ LIỆU (Có bọc chống lỗi)
+// =========================================================
+window.savedDutyData = function(isAutoSave = false) {
+    try {
+        const weekSelect = document.getElementById("duty-week-select");
+        const week = weekSelect ? weekSelect.value : "Tuần 1";
+        const safeWeek = week.replace(/\s+/g, '');
+
+        if (!STATE.duty) STATE.duty = {};
+        if (!STATE.duty[week]) STATE.duty[week] = {};
+
+        const days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
+        
+        days.forEach((day, index) => {
+            let dayKey = index + 1;
+            let containerList = document.getElementById(`duty-members-list-${safeWeek}-${dayKey}`);
+            let members = [];
+            if (containerList) {
+                let selects = containerList.querySelectorAll('select');
+                selects.forEach(sel => {
+                    if (sel.value) members.push(sel.value);
+                });
+            }
+
+            let leaderElem = document.getElementById(`duty-leader-${safeWeek}-${dayKey}`);
+            let leader = leaderElem ? leaderElem.value : "";
+
+            STATE.duty[week][dayKey] = {
+                members: members,
+                leader: leader
+            };
+        });
+
+        if (typeof window.saveData === 'function') {
+            window.saveData('duty', STATE.duty);
+        }
+        
+        // Nếu là bấm nút thủ công thì mới hiện thông báo
+        if (!isAutoSave) {
+            alert("✅ Đã lưu phân công trực nhật " + week + " thành công!");
+        }
+        
+        // Cập nhật ngay ra ngoài Trang chủ
+        if (typeof window.renderPublicDuty === 'function') {
+            window.renderPublicDuty();
+        }
+    } catch (err) {
+        console.error("Lỗi khi lưu:", err);
+        if (!isAutoSave) alert("Có lỗi xảy ra khi lưu, cô kiểm tra lại dữ liệu nhé!");
+    }
+};
+
+// =========================================================
+// 2. HÀM HIỂN THỊ RA TRANG CHỦ (Hàng dọc, bỏ số, màu đẹp)
+// =========================================================
+window.renderPublicDuty = function() {
+    try {
+        const container = document.getElementById("public-duty-list");
+        const weekSelectTab1 = document.getElementById("public-duty-week-select");
+        const weekSelectTab4 = document.getElementById("duty-week-select");
+        
+        const week = (weekSelectTab1 && weekSelectTab1.value) ? weekSelectTab1.value : (weekSelectTab4 ? weekSelectTab4.value : "Tuần 1");
+        
+        if (weekSelectTab1 && weekSelectTab1.value !== week) weekSelectTab1.value = week;
+
+        const labelSpan = document.getElementById("public-duty-week-label");
+        if (!container) return;
+
+        if (weekSelectTab1 && weekSelectTab1.options.length === 0) {
+            let wHtml = "";
+            for(let i = 1; i <= 35; i++) wHtml += `<option value="Tuần ${i}">Tuần ${i}</option>`;
+            weekSelectTab1.innerHTML = wHtml;
+            weekSelectTab1.value = week;
+        }
+
+        if (labelSpan) labelSpan.innerText = `(${week})`;
+
+        const weekDutyData = (STATE.duty && STATE.duty[week]) ? STATE.duty[week] : {};
+        const days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
+        
+        let html = "";
+        days.forEach((day, index) => {
+            let dayKey = index + 1;
+            let dayData = weekDutyData[dayKey];
+            
+            let membersStr = "Chưa phân công";
+            let leaderStr = "";
+
+            if (dayData) {
+                if (typeof dayData === 'string') {
+                    membersStr = dayData.replace(/^\d+\.\s*/, '');
+                } else {
+                    if (dayData.leader) {
+                        leaderStr = dayData.leader.replace(/^\d+\.\s*/, '');
+                    }
+                    if (dayData.members && dayData.members.length > 0) {
+                        let cleanMembers = dayData.members.map(m => m.replace(/^\d+\.\s*/, ''));
+                        membersStr = cleanMembers.join(", ");
+                    }
+                }
+            }
+
+            let detailsHtml = "";
+            if (leaderStr) {
+                detailsHtml += `<div style="color:#b45309; margin-bottom:2px;"><i class="fa-solid fa-user-shield" style="font-size:0.75rem;"></i> Trưởng nhóm: <b>${leaderStr}</b></div>`;
+            }
+            if (membersStr && membersStr !== "Chưa phân công") {
+                detailsHtml += `<div style="color:#334155;"><i class="fa-solid fa-user-group" style="font-size:0.75rem; color:#64748b;"></i> Thành viên: ${membersStr}</div>`;
+            }
+            if (!leaderStr && (!membersStr || membersStr === "Chưa phân công")) {
+                detailsHtml = `<div style="color:#94a3b8; font-style:italic;">Chưa phân công</div>`;
+            }
+
+            html += `
+                <div style="background:#ffffff; border:1px solid #bfdbfe; padding:8px 12px; border-radius:8px; width: 100%; font-size: 0.82rem; margin-bottom: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+                    <div style="font-weight:bold; color:#1e40af; margin-bottom:4px; display:flex; align-items:center; gap:6px; border-bottom:1px dashed #eff6ff; padding-bottom:3px;">
+                        <i class="fa-regular fa-calendar-days" style="color:#2563eb;"></i> ${day}
+                    </div>
+                    ${detailsHtml}
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    } catch (err) {
+        console.error("Lỗi renderPublicDuty:", err);
+    }
+};
+
+// =========================================================
+// 3. TỰ ĐỘNG CHẠY & CẦU NỐI ĐỒNG BỘ 2 TAB
+// =========================================================
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (typeof window.renderPublicDuty === 'function') window.renderPublicDuty();
+    }, 400);
+});
+
+// Lắng nghe mọi sự thay đổi trong Tab Trực nhật để tự động lưu ngầm
+window.addEventListener('change', (e) => {
+    let isDutyAction = e.target && (
+        (e.target.id && e.target.id.includes('duty')) || 
+        (e.target.closest && e.target.closest('[id*="duty"]'))
+    );
+
+    if (isDutyAction) {
+        if (typeof window.savedDutyData === 'function') {
+            // Truyền true vào để báo cho hàm biết đây là lưu ngầm (không hiện hộp thoại alert)
+            window.savedDutyData(true); 
+        }
+    }
+});
+// =========================================================
+// CẦU NỐI TỰ ĐỘNG CẬP NHẬT BẢNG THỐNG KÊ LỖI VI PHẠM
+// =========================================================
+window.addEventListener('click', (e) => {
+    let btn = e.target.closest('button');
+    if (btn && (btn.innerText.toLowerCase().includes('lưu') || btn.innerText.toLowerCase().includes('thêm'))) {
+        setTimeout(() => {
+            if (typeof window.renderPublicSummaryTable === 'function') {
+                window.renderPublicSummaryTable();
+            }
+        }, 300); 
+    }
+});
+
+window.addEventListener('change', (e) => {
+    if (e.target && e.target.tagName === 'SELECT') {
+        setTimeout(() => {
+            if (typeof window.renderPublicSummaryTable === 'function') {
+                window.renderPublicSummaryTable();
+            }
+        }, 300);
+    }
+});
+// Bù lại hàm đã mất để chống lỗi khi chuyển tab
+window.resetDutyAuth = function() {
+    console.log("Đã fix lỗi resetDutyAuth");
+};
+window.resetAllErrors = function() {
+    if(confirm("Xác nhận xóa sạch toàn bộ lỗi vi phạm của TẤT CẢ CÁC TUẦN?")) {
+        STATE.emulation = {};
+        window.saveData('emulation', STATE.emulation);
+        window.buildUI();
+        alert("Đã reset sạch toàn bộ lỗi của tất cả các tuần!");
+    }
 };
 </script>
 </body>
