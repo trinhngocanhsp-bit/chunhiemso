@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sổ Chủ Nhiệm Điện Tử - Lớp 11A5</title>
+    <title>Sổ Chủ Nhiệm Điện Tử</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -2083,7 +2083,7 @@ window.verifyDutyAuth = function() {
         }
 
         const week = weekSelect ? weekSelect.value : "Tuần 1";
-        const safeWeek = week.replace(/\s+/g, ''); // BẢO MẬT KHOẢNG TRẮNG TẠI ĐÂY
+        const safeWeek = week.replace(/\s+/g, '');
         
         let studentOptions = '<option value="">-- Chọn học sinh --</option>';
         if (typeof STATE !== 'undefined' && STATE.students && Array.isArray(STATE.students)) {
@@ -2096,38 +2096,15 @@ window.verifyDutyAuth = function() {
 
         let html = `<div style="font-weight:bold; color:#0f766e; margin-bottom:10px; font-size:0.85rem; border-bottom:1px dashed #cbd5e1; padding-bottom:6px;">Đang phân công cho: <span>${week}</span></div>`;
         
-        html += `<div style="margin-bottom:14px;">
-            <div style="font-weight:bold; color:#b91c1c; margin-bottom:6px; font-size:0.8rem;"><i class="fa-solid fa-triangle-exclamation"></i> Tham khảo học sinh mắc lỗi nhiều:</div>
-            <div style="max-height:110px; overflow-y:auto; border:1px solid #fca5a5; border-radius:6px; background:#fef2f2; padding:6px;">
-                <table style="width:100%; border-collapse:collapse; font-size:0.75rem;">
-                    <tr style="background:#fee2e2; color:#991b1b;"><th style="border:1px solid #fecaca; padding:4px; text-align:left;">Học sinh</th><th style="border:1px solid #fecaca; padding:4px; text-align:center; width:65px;">Lỗi</th></tr>`;
-        
-        let errorCounts = {};
-        if (typeof STATE !== 'undefined' && STATE.emulation && STATE.students) {
-            Object.keys(STATE.emulation).forEach(w => {
-                let wData = STATE.emulation[w];
-                Object.keys(wData).forEach(stt => {
-                    let sName = STATE.students[stt - 1];
-                    if (sName) {
-                        let sData = wData[stt];
-                        let totalErr = 0;
-                        if (typeof ERROR_TYPES !== 'undefined') {
-                            ERROR_TYPES.forEach(err => totalErr += (sData[err.key] || 0));
-                        }
-                        if (totalErr > 0) errorCounts[sName] = (errorCounts[sName] || 0) + totalErr;
-                    }
-                });
-            });
-        }
-        let sortedErrors = Object.keys(errorCounts).sort((a, b) => errorCounts[b] - errorCounts[a]);
-        if (sortedErrors.length === 0) {
-            html += `<tr><td colspan="2" style="border:1px solid #fecaca; padding:4px; text-align:center; font-style:italic; color:#7f1d1d;">Chưa có học sinh vi phạm</td></tr>`;
-        } else {
-            sortedErrors.forEach(sName => {
-                html += `<tr><td style="border:1px solid #fecaca; padding:4px;">${sName}</td><td style="border:1px solid #fecaca; padding:4px; text-align:center; font-weight:bold; color:#b91c1c;">${errorCounts[sName]}</td></tr>`;
-            });
-        }
-        html += `</table></div></div>`;
+        // Thêm nút bấm để lớp phó tự ấn thống kê lỗi theo tuần
+        html += `<div style="margin-bottom:12px;">
+            <button type="button" onclick="window.toggleWeeklyErrorStats('${safeWeek}')" style="background:#0284c7; color:#fff; border:none; padding:7px 12px; border-radius:6px; font-size:0.78rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 1px 2px rgba(0,0,0,0.1);">
+                <i class="fa-solid fa-chart-pie"></i> Thống kê lỗi ${week} để phân công
+            </button>
+            <div id="weekly-error-box-${safeWeek}" style="display:none; margin-top:6px; max-height:120px; overflow-y:auto; border:1px solid #bae6fd; border-radius:6px; background:#f0f9ff; padding:6px;">
+                <div style="font-size:0.72rem; color:#0369a1; font-style:italic; text-align:center;">Đang tải dữ liệu lỗi...</div>
+            </div>
+        </div>`;
 
         html += `<div style="font-weight:bold; color:#0f766e; margin-bottom:8px; font-size:0.8rem;"><i class="fa-solid fa-calendar-days"></i> Phân công lịch trực:</div>`;
 
@@ -2150,11 +2127,6 @@ window.verifyDutyAuth = function() {
         });
         
         html += `<button type="button" onclick="window.saveDutyData()" style="width:100%; margin-top:4px; background:#0d9488; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer; font-size:0.9rem;"><i class="fa-solid fa-floppy-disk"></i> Lưu phân công tuần này</button>`;
-        
-        html += `<div style="margin-top:16px; padding-top:10px; border-top:2px solid #cbd5e1;">
-            <div style="font-weight:bold; color:#0f766e; margin-bottom:6px; font-size:0.8rem;"><i class="fa-solid fa-chart-bar"></i> Thống kê tổng số buổi trực:</div>
-            <div id="duty-stats-content" style="font-size:0.78rem; color:#334155; background:#fff; padding:6px; border-radius:6px; border:1px solid #e2e8f0; max-height:130px; overflow-y:auto;">Đang tải thống kê...</div>
-        </div>`;
 
         container.innerHTML = html;
 
@@ -2174,7 +2146,7 @@ window.verifyDutyAuth = function() {
                     else if (dayData.member) members = [dayData.member];
                 }
                 
-                if (members.length === 0) members = [""]; 
+                if (members.length === 0) members = ["ID_TRONG"]; 
 
                 let containerList = document.getElementById(`duty-members-list-${safeWeek}-${dayKey}`);
                 if (containerList) {
@@ -2188,13 +2160,12 @@ window.verifyDutyAuth = function() {
                     containerList.innerHTML = mHtml;
 
                     let selects = containerList.querySelectorAll(`select`);
-                    selects.forEach((sel, sIdx) => { if (members[sIdx]) sel.value = members[sIdx]; });
+                    selects.forEach((sel, sIdx) => { if (members[sIdx] && members[sIdx] !== "ID_TRONG") sel.value = members[sIdx]; });
                 }
 
                 let leadElem = document.getElementById(`duty-leader-${safeWeek}-${dayKey}`);
                 if(leadElem && leader) leadElem.value = leader;
             });
-            window.updateDutyStats();
         }, 50);
 
     } else {
@@ -2202,154 +2173,57 @@ window.verifyDutyAuth = function() {
     }
 };
 
-window.addDutyMemberSlot = function(week, dayKey) {
-    const safeWeek = week.replace(/\s+/g, ''); // BẢO MẬT KHOẢNG TRẮNG TẠI ĐÂY
-    let containerList = document.getElementById(`duty-members-list-${safeWeek}-${dayKey}`);
-    if(!containerList) return;
-    let div = document.createElement('div');
-    div.style.cssText = "display:flex; gap:6px; align-items:center;";
-    div.innerHTML = `<select class="duty-member-sel-${safeWeek}-${dayKey}" style="flex:1; padding:6px; border:1px solid #cbd5e1; border-radius:4px; font-size:0.8rem; background:#fff;">${window._tempStudentOptions}</select>
-    <button type="button" onclick="this.parentElement.remove()" style="background:#ef4444; color:#fff; border:none; padding:6px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>`;
-    containerList.appendChild(div);
-};
-
-window.resetDutyAuth = function() {
-    const container = document.getElementById("duty-entry-container");
-    if(container) container.style.display = "none";
-    const passInput = document.getElementById("duty-pass-input")?.value;
-    const correctPass = (typeof STATE !== 'undefined' && STATE.passwords?.duty) ? STATE.passwords.duty : '123456';
-    if(passInput === correctPass) window.verifyDutyAuth();
-};
-
-window.saveDutyData = function() {
+// Hàm xử lý khi lớp phó bấm nút thống kê lỗi của tuần
+window.toggleWeeklyErrorStats = function(safeWeek) {
+    let box = document.getElementById(`weekly-error-box-${safeWeek}`);
+    if(!box) return;
+    
+    if(box.style.display === "block") {
+        box.style.display = "none";
+        return;
+    }
+    box.style.display = "block";
+    
     const weekSelect = document.getElementById("duty-week-select");
     const week = weekSelect ? weekSelect.value : "Tuần 1";
-    const safeWeek = week.replace(/\s+/g, ''); // BẢO MẬT KHOẢNG TRẮNG TẠI ĐÂY
     
-    if(typeof STATE === 'undefined') window.STATE = {};
-    if(!STATE.duty) STATE.duty = {};
-    if(!STATE.duty[week]) STATE.duty[week] = {};
-    
-    for(let i = 1; i <= 7; i++) {
-        let memberSelects = document.querySelectorAll(`.duty-member-sel-${safeWeek}-${i}`);
-        let members = [];
-        memberSelects.forEach(sel => { if(sel.value) members.push(sel.value); });
-        
-        let leaderVal = document.getElementById(`duty-leader-${safeWeek}-${i}`)?.value || "";
-        STATE.duty[week][i] = { members: members, leader: leaderVal };
-    }
-    
-    if(typeof window.saveData === 'function') {
-        window.saveData('duty', STATE.duty);
-    } else if(typeof localStorage !== 'undefined') {
-        localStorage.setItem('class_state', JSON.stringify(STATE));
-    }
-
-    alert("Đã lưu phân công trực nhật của " + week + " thành công!");
-    window.updateDutyStats();
-    if(typeof window.renderPublicDuty === 'function') window.renderPublicDuty();
-};
-
-window.updateDutyStats = function() {
-    let statsContainer = document.getElementById("duty-stats-content");
-    if(!statsContainer) return;
-
-    let counts = {};
-    if(typeof STATE !== 'undefined' && STATE.duty) {
-        Object.keys(STATE.duty).forEach(w => {
-            Object.keys(STATE.duty[w]).forEach(d => {
-                let dVal = STATE.duty[w][d];
-                if(dVal) {
-                    let members = [];
-                    let leader = "";
-                    if (typeof dVal === 'string') members = [dVal];
-                    else if (typeof dVal === 'object') {
-                        leader = dVal.leader || "";
-                        members = Array.isArray(dVal.members) ? dVal.members : (dVal.member ? [dVal.member] : []);
-                    }
-                    
-                    members.forEach(m => { if(m && m.trim() !== "") counts[m] = (counts[m] || 0) + 1; });
-                    if(leader && leader.trim() !== "") counts[leader] = (counts[leader] || 0) + 1;
+    let errorCounts = {};
+    if (typeof STATE !== 'undefined' && STATE.emulation && STATE.emulation[week] && STATE.students) {
+        let wData = STATE.emulation[week];
+        Object.keys(wData).forEach(stt => {
+            let sName = STATE.students[stt - 1];
+            if (sName) {
+                let sData = wData[stt];
+                let totalErr = 0;
+                if (sData && typeof ERROR_TYPES !== 'undefined') {
+                    ERROR_TYPES.forEach(err => {
+                        let cnt = Number(sData[err.key]) || 0;
+                        if (cnt > 0 && err.pen !== 'custom_add') {
+                            totalErr += cnt;
+                        }
+                    });
                 }
-            });
+                if (totalErr > 0) {
+                    errorCounts[sName] = totalErr;
+                }
+            }
         });
     }
-
-    let html = `<table style="width:100%; border-collapse:collapse;">
-        <tr style="background:#e2e8f0; font-weight:bold;"><th style="border:1px solid #cbd5e1; padding:4px; text-align:left;">Học sinh</th><th style="border:1px solid #cbd5e1; padding:4px; text-align:center; width:80px;">Số buổi</th></tr>`;
     
-    let sortedStudents = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
-    if(sortedStudents.length === 0) {
-        html += `<tr><td colspan="2" style="border:1px solid #cbd5e1; padding:6px; text-align:center; font-style:italic; color:#64748b;">Chưa có dữ liệu</td></tr>`;
+    let html = `<table style="width:100%; border-collapse:collapse; font-size:0.68rem;">
+        <tr style="background:#bae6fd; color:#0369a1; font-weight:bold;"><th style="border:1px solid #7dd3fc; padding:2px 4px; text-align:left;">Học sinh mắc lỗi trong ${week}</th><th style="border:1px solid #7dd3fc; padding:2px 4px; text-align:center; width:45px;">Số lỗi</th></tr>`;
+    
+    let sortedErrors = Object.keys(errorCounts).sort((a, b) => errorCounts[b] - errorCounts[a]);
+    if (sortedErrors.length === 0) {
+        html += `<tr><td colspan="2" style="border:1px solid #7dd3fc; padding:2px 4px; text-align:center; font-style:italic; color:#0369a1;">Tuyệt vời! Tuần này không có học sinh nào vi phạm.</td></tr>`;
     } else {
-        sortedStudents.forEach(sName => {
-            // Lọc bỏ số thứ tự ở đầu tên (VD: "3. Phùng Thế Anh" -> "Phùng Thế Anh")
-            let cleanName = sName.replace(/^\d+\.\s*/, ''); 
-            
-            html += `<tr><td style="border:1px solid #cbd5e1; padding:4px;">${cleanName}</td><td style="border:1px solid #cbd5e1; padding:4px; text-align:center; font-weight:bold; color:#0d9488;">${counts[sName]}</td></tr>`;
+        sortedErrors.forEach(sName => {
+            html += `<tr><td style="border:1px solid #7dd3fc; padding:2px 4px; color:#0f172a; font-weight:600;">${sName}</td><td style="border:1px solid #7dd3fc; padding:2px 4px; text-align:center; font-weight:bold; color:#b91c1c;">${errorCounts[sName]}</td></tr>`;
         });
     }
     html += `</table>`;
-    statsContainer.innerHTML = html;
+    box.innerHTML = html;
 };
-
-window.renderPublicDuty = function() {
-    const weekSelect = document.getElementById("public-duty-week-select") || document.getElementById("duty-week-select");
-    const dutyContainer = document.getElementById("public-duty-list");
-    const weekLabel = document.getElementById("public-duty-week-label");
-    if (!dutyContainer) return;
-
-    const week = weekSelect ? weekSelect.value : "Tuần 1";
-    if (weekLabel) weekLabel.textContent = `(${week})`;
-
-    let dutyData = (typeof STATE !== 'undefined' && STATE.duty && STATE.duty[week]) ? STATE.duty[week] : {};
-    let html = "";
-    
-    const days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
-    days.forEach((day, index) => {
-        let dayKey = index + 1;
-        let dayInfo = dutyData[dayKey];
-        
-        let members = [];
-        let leader = "";
-
-        if (dayInfo) {
-            if (typeof dayInfo === 'string') members = [dayInfo];
-            else if (typeof dayInfo === 'object') {
-                leader = dayInfo.leader || "";
-                members = Array.isArray(dayInfo.members) ? dayInfo.members : (dayInfo.member ? [dayInfo.member] : []);
-            }
-        }
-        members = members.filter(m => m && m.trim() !== ""); 
-
-        html += `<div style="background:#fff; border:1px solid #cbd5e1; padding:10px; border-radius:8px; min-width:140px; flex:1; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-            <div style="font-weight:bold; color:#0f766e; font-size:0.85rem; margin-bottom:6px; border-bottom:1px solid #f1f5f9; padding-bottom:4px;"><i class="fa-regular fa-calendar-days"></i> ${day}</div>`;
-        
-        // Lọc bỏ số thứ tự ở đầu tên nhóm trưởng
-        let cleanLeader = leader.replace(/^\d+\.\s*/, '');
-
-        if (members.length === 0 && !leader) {
-            html += `<div style="font-size:0.8rem; color:#94a3b8; font-style:italic;">Chưa phân công</div>`;
-        } else {
-            if (leader) html += `<div style="font-size:0.8rem; color:#b45309; font-weight:bold; margin-bottom:4px;"><i class="fa-solid fa-user-shield"></i> Trưởng: ${cleanLeader}</div>`;
-            if (members.length > 0) {
-                html += `<div style="font-size:0.8rem; color:#334155;"><strong>Thành viên:</strong><ul style="margin:2px 0 0 16px; padding:0; list-style-type:disc;">`;
-                members.forEach(m => {
-                    // Lọc bỏ số thứ tự ở đầu tên thành viên
-                    let cleanM = m.replace(/^\d+\.\s*/, '');
-                    html += `<li style="margin-bottom:2px;">${cleanM}</li>`;
-                });
-                html += `</ul></div>`;
-            }
-        }
-        html += `</div>`;
-    });
-    dutyContainer.innerHTML = html;
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => { if(typeof window.renderPublicDuty === 'function') window.renderPublicDuty(); }, 500);
-});
 // ================= KHÔI PHỤC TÍNH NĂNG NHẮN TIN ZALO =================
 window.renderAdminZaloSummary = function() {
     let week = document.getElementById("admin-zalo-week-select").value;
