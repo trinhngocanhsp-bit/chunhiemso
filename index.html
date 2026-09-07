@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -1376,34 +1377,71 @@
             window.resetInputAuth();
         }
 
-        window.resetInputAuth = function() {
-            document.getElementById("group-pass-input").value = "";
-            document.getElementById("group-member-entry-container").style.display = "none";
-            document.getElementById("lock-status-alert").style.display = "none";
-            let s = document.getElementById("input-week-select");
-            if(s) {
-                let wNum = parseInt(s.value.replace("Tuần ", "")) || 1;
-                let {submitDeadline, lockDeadline} = getWeekDeadlines(wNum);
-                document.getElementById("deadline-info-display").innerHTML = `
-    <div style="display: flex; align-items: center; gap: 8px;">
-        <i class="fa-solid fa-circle-info" style="font-size: 1.1rem; color: #2563eb;"></i>
-        <div>
-            <span>Thời gian nộp báo cáo thi đua tuần:</span><br>
-            <strong>• Hạn chót nộp đúng hạn:</strong> Trước ${submitDeadline.getDate()}/${submitDeadline.getMonth()+1}<br>
-            <strong>• Thời gian khóa hệ thống:</strong> ${lockDeadline.getDate()}/${lockDeadline.getMonth()+1}
-        </div>
-    </div>`;
-            }
+window.getWeekDeadlines = function(wNum) {
+    let baseDate = new Date(2026, 8, 7); // Ngày 7/9/2026 (Thứ Hai đầu tuần 1)
+    let weekStart = new Date(baseDate);
+    weekStart.setDate(baseDate.getDate() + (wNum - 1) * 7);
+    
+    // Tính ngày Chủ Nhật của tuần đó (thứ Hai + 6 ngày = Chủ Nhật)
+    let submitDeadline = new Date(weekStart);
+    submitDeadline.setDate(weekStart.getDate() + 6); // Chủ Nhật của tuần
+    submitDeadline.setHours(20, 0, 0, 0); // Cố định 20h
+    
+    // Khóa hệ thống sau hạn chót 3 ngày
+    let lockDeadline = new Date(submitDeadline);
+    lockDeadline.setDate(submitDeadline.getDate() + 3);
+    
+    return { submitDeadline, lockDeadline };
+};
+
+window.resetInputAuth = function() {
+    let passInput = document.getElementById("group-pass-input");
+    if (passInput) passInput.value = "";
+    let memberContainer = document.getElementById("group-member-entry-container");
+    if (memberContainer) memberContainer.style.display = "none";
+    let lockAlert = document.getElementById("lock-status-alert");
+    if (lockAlert) lockAlert.style.display = "none";
+    
+    let s = document.getElementById("input-week-select");
+    if(s) {
+        let val = s.value || "1";
+        let wNum = parseInt(val.replace(/\D/g, '')) || 1;
+        
+        let { submitDeadline, lockDeadline } = window.getWeekDeadlines(wNum);
+        
+        let subDay = submitDeadline.getDate();
+        let subMonth = submitDeadline.getMonth() + 1;
+        let subYear = submitDeadline.getFullYear();
+
+        let lockDay = lockDeadline.getDate();
+        let lockMonth = lockDeadline.getMonth() + 1;
+        let lockYear = lockDeadline.getFullYear();
+        
+        let deadlineBox = document.getElementById("deadline-info-display");
+        if (deadlineBox) {
+            deadlineBox.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-circle-info" style="font-size: 1.1rem; color: #2563eb;"></i>
+                <div>
+                    <span>Thời gian nộp báo cáo thi đua tuần:</span><br>
+                    <strong>• Hạn chót nộp đúng hạn:</strong> ${subDay}/${subMonth}/${subYear}<br>
+                    <strong>• Thời gian khóa hệ thống:</strong> ${lockDay}/${lockMonth}/${lockYear}
+                </div>
+            </div>`;
         }
+    }
+};
 
-      function getWeekDeadlines(weekNum) {
-    let start = STATE.config.startDate ? new Date(STATE.config.startDate) : new Date();
-
-    let sub = new Date(start.getTime() + (weekNum - 1) * 7 * 86400000 + 4 * 86400000);
-    let lock = new Date(sub.getTime() + 5 * 86400000);
-    return { submitDeadline: sub, lockDeadline: lock };
-}
-
+document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(window.resetInputAuth, 200);
+    
+    let weekSelect = document.getElementById("input-week-select");
+    if (weekSelect) {
+        weekSelect.addEventListener("change", function() {
+            setTimeout(window.resetInputAuth, 50);
+        });
+    }
+});
         window.verifyAuthAndRender = function() {
             let role = document.getElementById("select-role-type").value;
             let pass = document.getElementById("group-pass-input").value.trim();
@@ -2743,6 +2781,63 @@ window.resetAllErrors = function() {
         alert("Đã reset sạch toàn bộ lỗi của tất cả các tuần!");
     }
 };
+// 1. Hàm tính ngày hạn nộp theo số tuần
+window.getWeekDeadlines = function(wNum) {
+    let baseDate = new Date("2026-09-07"); // Ngày bắt đầu Tuần 1 (Thứ Hai)
+    let weekStart = new Date(baseDate);
+    weekStart.setDate(baseDate.getDate() + (wNum - 1) * 7);
+    
+    // Xác định ngày Chủ Nhật cuối tuần của tuần đó
+    let weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+    
+    let deadlineDayConfig = STATE.config.deadlineDay !== undefined ? STATE.config.deadlineDay : 1; 
+    
+    // Tính khoảng cách ngày tính tiếp từ Chủ Nhật (Chủ Nhật = 0, Thứ 2 = 1, Thứ 3 = 2,...)
+    let dayOffset = deadlineDayConfig === 7 ? 0 : deadlineDayConfig;
+    
+    let submitDeadline = new Date(weekEnd);
+    submitDeadline.setDate(weekEnd.getDate() + dayOffset);
+    submitDeadline.setHours(20, 0, 0, 0); // Cố định 20h
+    
+    // Khóa hệ thống sau hạn chót đúng 3 ngày
+    let lockDeadline = new Date(submitDeadline);
+    lockDeadline.setDate(submitDeadline.getDate() + 3);
+    
+    return { submitDeadline, lockDeadline };
+};
+// Hàm cập nhật hiển thị giao diện
+function updateDeadlineUI() {
+    let selectElem = document.getElementById("input-week-select");
+    if (!selectElem) return;
+    
+    let val = selectElem.value || "1";
+    let wNum = parseInt(val.replace(/\D/g, '')) || 1;
+    
+    let { submitDeadline, lockDeadline } = window.getWeekDeadlines(wNum);
+    let deadlineBox = document.getElementById("deadline-info-display");
+    
+    if (deadlineBox) {
+        deadlineBox.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-circle-info" style="font-size: 1.1rem; color: #2563eb;"></i>
+            <div>
+                <span>Thời gian nộp báo cáo thi đua tuần:</span><br>
+                <strong>• Hạn chót nộp đúng hạn:</strong> Trước ${submitDeadline.getDate()}/${submitDeadline.getMonth()+1}<br>
+                <strong>• Thời gian khóa hệ thống:</strong> ${lockDeadline.getDate()}/${lockDeadline.getMonth()+1}
+            </div>
+        </div>`;
+    }
+}
+
+// Tự động gán thẳng hàm cập nhật vào ô chọn tuần khi trang vừa tải xong
+window.addEventListener("DOMContentLoaded", function() {
+    let selectElem = document.getElementById("input-week-select");
+    if (selectElem) {
+        selectElem.onchange = updateDeadlineUI;
+        updateDeadlineUI(); // Chạy luôn lần đầu khi load trang
+    }
+});
 </script>
 </body>
 </html>
