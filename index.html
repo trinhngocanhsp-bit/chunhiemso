@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -2485,7 +2482,7 @@ window.autoSelectCurrentWeek = function() {
     let currentWeekNum = Math.max(1, Math.floor(diffDays / 7) + 1);
     
     // Tự động gán giá trị vào các dropdown chọn tuần trên giao diện
-    let weekSelects = document.querySelectorAll("#input-week-select, #public-week-select, #duty-week-select");
+    let weekSelects = document.querySelectorAll("#input-week-select, #public-week-select, #duty-week-select, #seating-week-select");
     weekSelects.forEach(select => {
         if (select) {
             let optionVal = "Tuần " + currentWeekNum;
