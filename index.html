@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<!-- ============================================================ -->
+<!-- BẢN QUYỀN THUỘC SỞ HỮU CHÍNH CHỦ:                            -->
+<!-- Cô giáo Trịnh Ngọc Ánh                                        -->
+<!-- GV Trường THPT Tân Yên số 2 - Bắc Ninh                        -->
+<!-- Zalo: 0768269194                                              -->
+<!--                                                               -->
+<!-- MỌI HÀNH VI SAO CHÉP, CHỈNH SỬA, HOẶC BÁN LẠI MÃ NGUỒN NÀY    -->
+<!-- MÀ KHÔNG CÓ SỰ ĐỒNG Ý CỦA TÁC GIẢ ĐỀU LÀ VI PHẠM BẢN QUYỀN.   -->
+<!-- ============================================================ -->
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -7,10 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- ============================================================ -->
-    <!-- BẢN QUYỀN THUỘC SỞ HỮU CHÍNH CHỦ: CÔ TRỊNH NGỌC ÁNH (BẮC NINH) -->
-    <!-- ============================================================ -->
+
     <script> const MA_DU_LIEU = "11A5"; </script>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -2875,160 +2881,62 @@ window.addEventListener("DOMContentLoaded", () => {
     window.autoSelectCurrentWeek();
 });
 
-// Hàm lưu phân công trực nhật từ Tab 4
+
+// 2. Hàm hiển thị lịch trực ra ngoài Trang chủ (Tab 1) theo hàng dọc, lọc bỏ số thứ tự
+// =========================================================
+// =========================================================
+// HÀM LƯU PHÂN CÔNG TRỰC NHẬT (ĐÃ FIX LỖI MẤT DỮ LIỆU)
+// =========================================================
 window.savedDutyData = function(isAutoSave = false) {
-    const weekSelect = document.getElementById("duty-week-select");
-    if (!weekSelect) return;
-    const week = weekSelect.value;
-    const safeWeek = week.replace(/\s+/g, '');
-    const days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
-
-    if (!STATE.duty) STATE.duty = {};
-    if (!STATE.duty[week]) STATE.duty[week] = {};
-
-    days.forEach((day, index) => {
-        let dayKey = index + 1;
-        
-        // 1. Lấy tên nhóm trưởng
-        let leaderElem = document.getElementById(`duty-leader-${safeWeek}-${dayKey}`);
-        let leaderVal = leaderElem ? leaderElem.value.trim() : "";
-
-        // 2. Gom tất cả các bạn thành viên (hỗ trợ cả class cũ và mới)
-        let membersArr = [];
-        let memberSelects = document.querySelectorAll(`.duty-member-sel-${safeWeek}-${dayKey}`);
-        memberSelects.forEach(sel => {
-            let val = sel.value ? sel.value.trim() : "";
-            if (val && val !== "ID_TRONG") {
-                membersArr.push(val);
-            }
-        });
-
-        // 3. Cập nhật vào STATE
-        STATE.duty[week][dayKey] = {
-            leader: leaderVal,
-            members: membersArr
-        };
-    });
-
-    // 4. Lưu lên Firebase hoặc LocalStorage
-    if (typeof window.saveToFirebase === 'function') {
-        window.saveToFirebase();
-    } else if (typeof window.saveData === 'function') {
-        window.saveData();
-    } else {
-        localStorage.setItem("class_management_state", JSON.stringify(STATE));
-    }
-
-    // 5. Cập nhật ngay lại giao diện trang chủ
-    if (typeof window.renderDutySchedule === 'function') {
-        window.renderDutySchedule();
-    } else if (typeof window.renderDutyTable === 'function') {
-        window.renderDutyTable();
-    }
-
-    if (!isAutoSave) {
-        alert(`Đã lưu thành công lịch trực ${week}!`);
-    }
-};
-// Hàm hiển thị lịch trực ra ngoài Trang chủ (Tab 1)
-// 1. Hàm lưu phân công trực nhật (Đã bọc bảo vệ chống lỗi treo trang)
-window.savedDutyData = function() {
     try {
         const weekSelect = document.getElementById("duty-week-select");
-        const week = weekSelect ? weekSelect.value : "Tuần 1";
+        if (!weekSelect) return;
+        const week = weekSelect.value;
         const safeWeek = week.replace(/\s+/g, '');
+        const days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
 
         if (!STATE.duty) STATE.duty = {};
         if (!STATE.duty[week]) STATE.duty[week] = {};
 
-        const days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
-        
         days.forEach((day, index) => {
             let dayKey = index + 1;
-            let containerList = document.getElementById(`duty-members-list-${safeWeek}-${dayKey}`);
-            let members = [];
-            if (containerList) {
-                let selects = containerList.querySelectorAll('select');
-                selects.forEach(sel => {
-                    if (sel.value) members.push(sel.value);
-                });
-            }
-
+            
+            // Lấy tên nhóm trưởng
             let leaderElem = document.getElementById(`duty-leader-${safeWeek}-${dayKey}`);
-            let leader = leaderElem ? leaderElem.value : "";
+            let leaderVal = leaderElem ? leaderElem.value : "";
 
+            // Lấy danh sách thành viên
+            let membersArr = [];
+            let memberSelects = document.querySelectorAll(`.duty-member-sel-${safeWeek}-${dayKey}`);
+            memberSelects.forEach(sel => {
+                if (sel.value && sel.value !== "") {
+                    membersArr.push(sel.value);
+                }
+            });
+
+            // Lưu vào STATE.duty
             STATE.duty[week][dayKey] = {
-                members: members,
-                leader: leader
+                leader: leaderVal,
+                members: membersArr
             };
         });
 
-        if (typeof window.saveData === 'function') {
-            window.saveData('duty', STATE.duty);
-        }
-        
-        alert("✅ Đã lưu phân công trực nhật " + week + " thành công!");
-        
+        // ⭐ QUAN TRỌNG: Gọi saveData với ĐÚNG 2 tham số
+        window.saveData('duty', STATE.duty);
+
+        // Render lại giao diện Tab 1
         if (typeof window.renderPublicDuty === 'function') {
             window.renderPublicDuty();
         }
+
+        if (!isAutoSave) {
+            alert(`✅ Đã lưu thành công lịch trực ${week}!`);
+        }
     } catch (err) {
-        console.error("Lỗi khi lưu:", err);
-        alert("Có lỗi xảy ra khi lưu, cô kiểm tra lại dữ liệu nhé!");
+        console.error("Lỗi lưu duty:", err);
+        if (!isAutoSave) alert("❌ Có lỗi xảy ra khi lưu: " + err.message);
     }
 };
-
-// 2. Hàm hiển thị lịch trực ra ngoài Trang chủ (Tab 1) theo hàng dọc, lọc bỏ số thứ tự
-// =========================================================
-// 1. HÀM LƯU DỮ LIỆU (Có bọc chống lỗi)
-// =========================================================
-window.savedDutyData = function(isAutoSave = false) {
-    const weekSelect = document.getElementById("duty-week-select");
-    if (!weekSelect) return;
-    const week = weekSelect.value;
-    const safeWeek = week.replace(/\s+/g, '');
-    const days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
-
-    if (!STATE.duty) STATE.duty = {};
-    if (!STATE.duty[week]) STATE.duty[week] = {};
-
-    days.forEach((day, index) => {
-        let dayKey = index + 1;
-        
-        // 1. Lấy tên nhóm trưởng
-        let leaderElem = document.getElementById(`duty-leader-${safeWeek}-${dayKey}`);
-        let leaderVal = leaderElem ? leaderElem.value : "";
-
-        // 2. Gom tất cả danh sách các bạn thành viên trực nhật từ các thẻ
-        let membersArr = [];
-        let memberSelects = document.querySelectorAll(`.duty-member-sel-${safeWeek}-${dayKey}`);
-        memberSelects.forEach(sel => {
-            if (sel.value && sel.value !== "") {
-                membersArr.push(sel.value);
-            }
-        });
-
-        // 3. Lưu vào cấu trúc STATE
-        STATE.duty[week][dayKey] = {
-            leader: leaderVal,
-            members: membersArr
-        };
-    });
-
-    // Gọi hàm lưu dữ liệu lên Firebase / LocalStorage chung của hệ thống
-    if (typeof window.saveToFirebase === 'function') {
-        window.saveToFirebase();
-    } else if (typeof window.saveData === 'function') {
-        window.saveData();
-    } else {
-        localStorage.setItem("class_management_state", JSON.stringify(STATE));
-    }
-
-    if (!isAutoSave) {
-        alert(`Đã lưu thành công lịch trực ${week}!`);
-    }
-};
-// =========================================================
 // 2. HÀM HIỂN THỊ RA TRANG CHỦ (Hàng dọc, bỏ số, màu đẹp)
 // =========================================================
  window.renderPublicDuty = function() {
@@ -3456,7 +3364,31 @@ document.addEventListener("DOMContentLoaded", function() {
         sel.addEventListener("change", window.renderPublicDuty);
     }
 });
+// ============ CHẶN CHUỘT PHẢI + BẢN QUYỀN ============
+document.addEventListener('contextmenu', e => e.preventDefault());
 
+console.log('%c⚠️ CẢNH BÁO BẢN QUYỀN', 'color:#dc2626; font-size:28px; font-weight:bold; text-shadow: 2px 2px 0 #000;');
+console.log('%c📌 Sản phẩm thuộc bản quyền của: Cô giáo Trịnh Ngọc Ánh', 'color:#1e40af; font-size:16px; font-weight:bold;');
+console.log('%cGV Trường THPT Tân Yên số 2 - Bắc Ninh', 'color:#16a34a; font-size:16px;');
+console.log('%c📞 Zalo: 0768269194', 'color:#0068ff; font-size:16px; font-weight:bold;');
+console.log('%c❌ MỌI HÀNH VI SAO CHÉP, CHỈNH SỬA, HOẶC BÁN LẠI MÃ NGUỒN NÀY MÀ KHÔNG CÓ SỰ ĐỒNG Ý CỦA TÁC GIẢ ĐỀU LÀ VI PHẠM BẢN QUYỀN.', 'color:#dc2626; font-size:15px; font-weight:bold;');
+
+// TỰ ĐỘNG CHỌN TUẦN THỰC CHO TAB TRỰC NHẬT
+setTimeout(function() {
+    let cw = getCurrentRealWeek();
+    if (cw <= 0) return;
+    let tWeek = "Tuần " + cw;
+    let pd = document.getElementById('public-duty-week-select');
+    if (pd) pd.value = tWeek;
+    let dw = document.getElementById('duty-week-select');
+    if (dw) dw.value = tWeek;
+    let sw = document.getElementById('seating-week-select');
+    if (sw) sw.value = tWeek;
+    let iw = document.getElementById('input-week-select');
+    if (iw) iw.value = tWeek;
+    if (typeof window.renderPublicDuty === 'function') window.renderPublicDuty();
+    if (typeof window.renderSeatingMap === 'function') window.renderSeatingMap();
+}, 1000);
 </script>
 </body>
 </html>
