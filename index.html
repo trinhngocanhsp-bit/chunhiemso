@@ -550,7 +550,7 @@
     <div class="modal-overlay" id="authModal">
         <div class="auth-card" style="text-align: center; max-width: 350px;">
             <div style="font-size:2.5rem; color:#ea580c; margin-bottom:10px;"><i class="fa-solid fa-shield-halved"></i></div>
-            <h4 style="font-weight: 800; color:#0f172a; margin-bottom: 16px; font-size:1.1rem;">BẢNG MẬT QUẢN TRỊ VIÊN</h4>
+            <h4 style="font-weight: 800; color:#0f172a; margin-bottom: 16px; font-size:1.1rem;">PHẦN DÀNH CHO QUẢN TRỊ VIÊN</h4>
             <input type="password" id="admin-pass-input" style="margin-bottom: 16px; padding:12px; width:100%; border-radius:8px; border:1px solid #cbd5e1; text-align:center; font-size:1rem; font-weight:bold;">
             <div style="display: flex; gap: 8px;">
                 <button onclick="document.getElementById('authModal').classList.remove('open')" class="btn-action" style="flex:1; background:#f1f5f9; color:#475569;">Hủy</button>
@@ -2355,31 +2355,35 @@ window.swapEntireGroups = function() {
             container.innerHTML = `<h4 style="font-weight:800; color:#1e3a8a; margin-bottom:12px; font-size:1.05rem;">${title}</h4>`;
             if(!STATE.emulation[week]) STATE.emulation[week] = {};
 
-            sttList.forEach(stt => {
-                let name = STATE.students[stt - 1];
-                if(!name) return;
-                
-                let data = STATE.emulation[week][stt] || {};
-                
-                let errorBoxesHTML = ERROR_TYPES.map(err => {
-                    let isCustom = (err.pen === 'custom_sub' || err.pen === 'custom_add');
-                    let inputHtml = isCustom 
-                        ? `<input type="number" class="count-val" value="${data[err.key]||0}" onchange="window.setExactError(${stt}, '${err.key}', this.value)" min="0" ${isLocked?'disabled':''}>`
-                        : `<input type="number" class="count-val" value="${data[err.key]||0}" readonly ${isLocked?'disabled':''}>`;
-                    
-                    let minusBtn = isCustom ? '' : `<button class="btn-count" onclick="window.updateError(${stt}, '${err.key}', -1)" ${isLocked?'disabled':''}><i class="fa-solid fa-minus"></i></button>`;
-                    let plusBtn = isCustom ? '' : `<button class="btn-count add" onclick="window.updateError(${stt}, '${err.key}', 1)" ${isLocked?'disabled':''}><i class="fa-solid fa-plus"></i></button>`;
-                    
-                    return `
-                    <div class="error-counter-box" style="${(typeof err.pen === 'number' && err.pen < 0) || err.key==='cdx' ? 'background:#f0fdf4; border-color:#bbf7d0;' : ''}">
-                        <span class="error-label">${err.label}</span>
-                        <div class="counter-controls">
-                            ${minusBtn}
-                            ${inputHtml}
-                            ${plusBtn}
-                        </div>
-                    </div>`;
-                }).join('');
+           sttList.forEach(stt => {
+    let name = STATE.students[stt - 1];
+    if(!name) return;
+    
+    let data = STATE.emulation[week][stt] || {};
+    let studentPos = STATE.positions[stt] || "";
+    let isLeaderTarget = (groupId && studentPos === "Tổ trưởng"); // <-- Thêm dòng này
+
+    let errorBoxesHTML = ERROR_TYPES.map(err => {
+        let isCustom = (err.pen === 'custom_sub' || err.pen === 'custom_add');
+        let shouldDisable = isLocked || isLeaderTarget; // <-- Thêm dòng này
+
+        let inputHtml = isCustom 
+            ? `<input type="number" class="count-val" value="${data[err.key]||0}" onchange="window.setExactError(${stt}, '${err.key}', this.value)" min="0" ${shouldDisable ? 'disabled style="background:#e2e8f0; cursor:not-allowed;"' : ''}>`
+            : `<input type="number" class="count-val" value="${data[err.key]||0}" readonly ${shouldDisable ? 'disabled style="background:#e2e8f0; cursor:not-allowed;"' : ''}>`;
+        
+        let minusBtn = (isCustom || shouldDisable) ? '' : `<button class="btn-count" onclick="window.updateError(${stt}, '${err.key}', -1)"><i class="fa-solid fa-minus"></i></button>`;
+        let plusBtn = (isCustom || shouldDisable) ? '' : `<button class="btn-count add" onclick="window.updateError(${stt}, '${err.key}', 1)"><i class="fa-solid fa-plus"></i></button>`;
+        
+        return `
+        <div class="error-counter-box" style="${(typeof err.pen === 'number' && err.pen < 0) || err.key==='cdx' ? 'background:#f0fdf4; border-color:#bbf7d0;' : ''}">
+            <span class="error-label">${err.label}</span>
+            <div class="counter-controls">
+                ${minusBtn}
+                ${inputHtml}
+                ${plusBtn}
+            </div>
+        </div>`;
+    }).join('');
 
                 let total = calculateScore(stt, data);
                 container.innerHTML += `
@@ -2441,7 +2445,7 @@ window.swapEntireGroups = function() {
         function getGroupMembers(groupId) {
     let members = [];
     
-    // Đọc danh sách học sinh chuẩn từ cấu hình Tổ ở Tab 5 (Không bị ảnh hưởng bởi việc đổi chỗ sơ đồ)
+    // Đọc danh sách học sinh chuẩn từ cấu hình Tổ ở Tab 5
     if (typeof STATE !== 'undefined' && STATE.studentGroups) {
         for (let stt = 1; stt <= STATE.students.length; stt++) {
             let assignedGroupStr = STATE.studentGroups[stt];
