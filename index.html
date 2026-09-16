@@ -134,6 +134,28 @@
         .modern-announcement-icon { background: #e0f2fe; color: #0284c7; width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.75rem; }
         .modern-announcement-date { font-size: 0.7rem; color: #64748b; background: #f1f5f9; padding: 3px 8px; border-radius: 12px; font-weight: 600; }
         .modern-announcement-content { font-size: 0.85rem; color: #475569; padding-left: 36px; white-space: pre-wrap; line-height: 1.5; }
+
+
+/* ===== NỘP ẢNH MINH CHỨNG ===== */
+.photo-contest-card{background:linear-gradient(135deg,#faf5ff,#e9d5ff);border:2px solid #8b5cf6;border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(139,92,246,0.2);}
+.photo-contest-title{font-weight:800;color:#6b21a8;font-size:0.95rem;margin-bottom:4px;}
+.photo-contest-meta{font-size:0.78rem;color:#5b21b6;margin-bottom:8px;}
+.photo-contest-link{color:#dc2626;font-weight:800;text-decoration:underline;cursor:pointer;background:#fef08a;padding:1px 6px;border-radius:4px;}
+.photo-upload-box{background:#fff;border:1.5px dashed #8b5cf6;border-radius:10px;padding:12px;margin-top:8px;}
+.photo-preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:10px;}
+.photo-preview-item{position:relative;border:1px solid #cbd5e1;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#f8fafc;}
+.photo-preview-item img{width:100%;height:100%;object-fit:cover;}
+.photo-preview-item .remove-btn{position:absolute;top:2px;right:2px;background:#dc2626;color:#fff;border:none;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:0.7rem;font-weight:900;line-height:1;}
+.photo-progress{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-top:8px;display:none;}
+.photo-progress-bar{height:100%;background:linear-gradient(90deg,#16a34a,#22c55e);width:0%;transition:width 0.3s;}
+.super-admin-block{background:linear-gradient(135deg,#1e1b4b,#312e81);border:2px solid #6366f1;border-radius:12px;padding:14px;margin-bottom:14px;color:#e0e7ff;display:none;}
+.super-admin-block.show{display:block;}
+.super-admin-block h4{color:#a5b4fc;font-size:0.95rem;margin-bottom:10px;}
+.super-admin-block .form-group label{color:#c7d2fe;}
+.super-admin-block input{border-color:#6366f1 !important;background:#1e1b4b;color:#fff !important;}
+.status-badge-done{background:#dcfce7;color:#166534;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;display:inline-block;}
+.status-badge-miss{background:#fee2e2;color:#991b1b;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;display:inline-block;}
+.status-badge-late{background:#fef3c7;color:#92400e;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;display:inline-block;}
     </style>
 </head>
 <body>
@@ -182,7 +204,8 @@
                     <h4 style="color:#1e3a8a; font-size:0.95rem; margin-bottom:8px; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px;"><i class="fa-solid fa-bullhorn"></i> BẢNG TIN & THÔNG BÁO LỚP</h4>
                     <div id="homeroom-announcements-container" style="display:flex; flex-direction:column;"></div>
                 </div>
-
+                <!-- KHU VỰC NỘP ẢNH MINH CHỨNG (BANNER + FORM) -->
+                <div id="photo-contest-section" style="display:none; margin-bottom:14px;"></div>
                 <div style="background:#f0fdfa; border:1.5px solid #14b8a6; padding:12px; border-radius:10px; margin-bottom:14px; box-shadow:0 2px 6px rgba(20, 184, 166, 0.1);">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
                         <h4 style="color:#0f766e; font-size:0.95rem; margin:0;"><i class="fa-solid fa-broom"></i> PHÂN CÔNG TRỰC NHẬT <span id="public-duty-week-label"></span></h4>
@@ -194,6 +217,7 @@
                 </div>
 
                 <!-- TRA CỨU HỒ SƠ THI ĐUA -->
+                               
                 <div style="background:#fff; border:1.5px solid #0ea5e9; padding:12px; border-radius:10px; margin-bottom:14px; box-shadow:0 2px 6px rgba(14, 165, 233, 0.1);">
                     <h4 style="color:#0369a1; font-size:0.95rem; margin-bottom:8px;"><i class="fa-solid fa-magnifying-glass"></i> TRA CỨU HỒ SƠ THI ĐUA</h4>
                     <div class="search-controls" style="display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap;">
@@ -323,6 +347,113 @@
         <!-- TAB 5: QUẢN TRỊ DÀNH CHO GVCN -->
         <div id="panel-tab5" class="view-panel">
             <div class="card">
+
+                <!-- KHU VỰC CHỦ HỆ THỐNG (ẨN) -->
+                <div class="super-admin-block" id="superAdminBlock">
+                    <h4><i class="fa-solid fa-user-shield"></i> KHU VỰC CHỦ HỆ THỐNG</h4>
+                    <div id="superAdminLocked">
+                        <div class="form-group"><label>Mật khẩu Super Admin</label><input type="password" id="superAdminPass" placeholder="Nhập mật khẩu..."></div>
+                        <button class="btn-action" style="background:#6366f1;width:100%;" onclick="window.unlockSuperAdmin()"><i class="fa-solid fa-key"></i> Mở khóa</button>
+                    </div>
+                    <div id="superAdminUnlocked" style="display:none;">
+                        <div class="form-group"><label>📁 Folder ID Drive của giáo viên</label><input type="text" id="sa-folder-id" placeholder="VD: 1AbC...xyz"></div>
+                        <div class="form-group"><label>🔑 Secret Key (tùy chọn, chống spam)</label><input type="text" id="sa-secret-key" placeholder="Để trống nếu không cần"></div>
+                        <div class="form-group"><label>🌐 Apps Script Web App URL</label><input type="text" id="sa-apps-url" placeholder="https://script.google.com/macros/s/.../exec"></div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn-action" style="background:#16a34a;flex:1;" onclick="window.saveSuperAdminConfig()"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
+                            <button class="btn-action" style="background:#0ea5e9;flex:1;" onclick="window.testDriveConnection()"><i class="fa-solid fa-plug-circle-check"></i> Test</button>
+                            <button class="btn-action" style="background:#64748b;flex:1;" onclick="window.lockSuperAdmin()"><i class="fa-solid fa-lock"></i> Khóa</button>
+                        </div>
+                        <div id="sa-test-result" style="margin-top:10px;font-size:0.82rem;"></div>
+                    </div>
+                </div>
+
+                                                <!-- WRAPPER QUẢN LÝ CUỘC THI (sẽ tự di chuyển xuống cuối) -->
+                <div id="contestManagerWrapper" style="margin-top:14px;">
+                <!-- NÚT TOGGLE QUẢN LÝ CUỘC THI -->
+                <div style="margin-bottom:14px;">
+                    <button type="button" onclick="window.toggleContestManager()" style="width:100%; background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; border:none; padding:14px; border-radius:12px; font-weight:800; font-size:0.95rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(249,115,22,0.25);">
+                        <span><i class="fa-solid fa-trophy"></i> QUẢN LÝ CUỘC THI NỘP ẢNH</span>
+                        <i class="fa-solid fa-chevron-down" id="contestManagerArrow" style="transition:transform 0.3s;"></i>
+                    </button>
+                </div>
+                <!-- QUẢN LÝ CUỘC THI NỘP ẢNH -->
+                <div id="contestManagerBox" style="background:#fff7ed;border:1.5px solid #f97316;padding:14px;border-radius:12px;margin-bottom:14px;">
+                    <h4 style="color:#9a3412;font-size:1rem;margin-bottom:10px;"><i class="fa-solid fa-trophy"></i> QUẢN LÝ CUỘC THI NỘP ẢNH</h4>
+                    <div style="background:#fff;border:1px dashed #f97316;border-radius:8px;padding:10px;margin-bottom:12px;">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;">
+                            <div class="form-group mb-0"><label>Tên cuộc thi</label><input type="text" id="pc-name" placeholder="VD: Ảnh ATGT 2026"></div>
+                            <div class="form-group mb-0"><label>Hạn nộp</label><input type="datetime-local" id="pc-deadline"></div>
+                            <div class="form-group mb-0"><label>Số ảnh tối đa</label><input type="number" id="pc-max" value="3" min="1" max="20"></div>
+                        </div>
+                        <button class="btn-action" style="background:#f97316;width:100%;margin-top:8px;" onclick="window.createPhotoContest()"><i class="fa-solid fa-plus"></i> Tạo cuộc thi mới</button>
+                    </div>
+                    <div class="table-responsive" style="max-height:300px;">
+                        <table>
+                            <thead><tr style="background:#fed7aa;color:#9a3412;">
+                                <th style="width:40px;">STT</th><th style="text-align:left;">Tên cuộc thi</th>
+                                <th style="width:130px;">Hạn nộp</th><th style="width:70px;">Max</th>
+                                <th style="width:100px;">Trạng thái</th><th style="width:130px;">Thao tác</th>
+                            </tr></thead>
+                            <tbody id="admin-contest-tbody"><tr><td colspan="6" style="padding:12px;font-style:italic;color:#9a3412;">Chưa có cuộc thi nào.</td></tr></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:14px;padding-top:14px;border-top:1px dashed #f97316;">
+                        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+                            <label style="font-weight:700;color:#9a3412;font-size:0.85rem;">Theo dõi:</label>
+                            <select id="admin-track-contest" onchange="window.renderPhotoTracking()" style="padding:6px;border-radius:6px;border:1px solid #f97316;font-weight:600;min-width:150px;"></select>
+                            <button class="btn-action" style="background:#0ea5e9;padding:6px 12px;font-size:0.78rem;" onclick="window.renderPhotoTracking()"><i class="fa-solid fa-rotate"></i> Tải lại</button>
+                        </div>
+                        <div class="table-responsive" style="max-height:400px;">
+                            <table>
+                                <thead><tr style="background:#ffedd5;color:#9a3412;">
+                                    <th style="width:45px;">STT</th><th style="text-align:left;">Học sinh</th>
+                                    <th style="width:80px;">Số ảnh</th><th style="width:130px;">Trạng thái</th>
+                                    <th style="width:140px;">Thời gian nộp</th><th style="width:110px;">Hành động</th>
+                                </tr></thead>
+                                <tbody id="admin-photo-tracking-tbody"><tr><td colspan="6" style="padding:12px;font-style:italic;color:#9a3412;">Chọn cuộc thi để xem.</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                                    <!-- KHU VỰC SOẠN TIN NHẮN NHẮC NHỞ -->
+                    <div style="margin-top:16px;padding-top:14px;border-top:2px dashed #f97316;">
+                        <h5 style="color:#9a3412;font-size:0.95rem;margin-bottom:8px;">
+                            <i class="fa-solid fa-comment-dots"></i> SOẠN TIN NHẮN NHẮC NHỞ NỘP ẢNH
+                        </h5>
+                        <div style="background:#fff;border:1px dashed #f97316;border-radius:8px;padding:10px;margin-bottom:8px;">
+                            <div style="font-size:0.75rem;color:#7c2d12;margin-bottom:6px;font-weight:600;">
+                                💡 Bấm nút để chèn biến — hệ thống tự thay bằng dữ liệu thật khi tạo tin
+                            </div>
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                                <button type="button" class="btn-action" style="background:#8b5cf6;padding:6px 10px;font-size:0.72rem;" onclick="window.generateMissingMessage()">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Tạo tin tự động
+                                </button>
+                                <button type="button" class="btn-action" style="background:#0ea5e9;padding:6px 10px;font-size:0.72rem;" onclick="window.insertMsgVar('{ten_lop}')">+ Tên lớp</button>
+                                <button type="button" class="btn-action" style="background:#0ea5e9;padding:6px 10px;font-size:0.72rem;" onclick="window.insertMsgVar('{ten_cuoc_thi}')">+ Cuộc thi</button>
+                                <button type="button" class="btn-action" style="background:#0ea5e9;padding:6px 10px;font-size:0.72rem;" onclick="window.insertMsgVar('{han_nop}')">+ Hạn nộp</button>
+                                <button type="button" class="btn-action" style="background:#0ea5e9;padding:6px 10px;font-size:0.72rem;" onclick="window.insertMsgVar('{danh_sach_chua_nop}')">+ DS chưa nộp</button>
+                                <button type="button" class="btn-action" style="background:#0ea5e9;padding:6px 10px;font-size:0.72rem;" onclick="window.insertMsgVar('{so_luong}')">+ Số lượng</button>
+                                <button type="button" class="btn-action" style="background:#0ea5e9;padding:6px 10px;font-size:0.72rem;" onclick="window.insertMsgVar('{ten_gv}')">+ Tên GVCN</button>
+                            </div>
+                        </div>
+                        <textarea id="missing-msg-textarea" rows="9" placeholder="Bấm 'Tạo tin tự động' hoặc tự soạn nội dung..." style="width:100%;padding:10px;font-size:0.83rem;border-radius:8px;border:1.5px solid #f97316;font-family:inherit;outline:none;resize:vertical;background:#fff;line-height:1.5;"></textarea>
+                        <div id="msg-preview-info" style="margin-top:6px;font-size:0.75rem;color:#7c2d12;font-style:italic;"></div>
+                        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+                            <button type="button" class="btn-action" style="background:#16a34a;flex:1;min-width:150px;" onclick="window.copyMissingMsg()">
+                                <i class="fa-solid fa-copy"></i> Copy tin nhắn chung
+                            </button>
+                            <button type="button" class="btn-action" style="background:#dc2626;flex:1;min-width:150px;" onclick="window.copyEachStudentMsg()">
+                                <i class="fa-solid fa-user"></i> Copy tin từng em riêng
+                            </button>
+                            <button type="button" class="btn-action" style="background:#64748b;min-width:100px;" onclick="document.getElementById('missing-msg-textarea').value=''">
+                                <i class="fa-solid fa-eraser"></i> Xóa
+                            </button>
+                        </div>
+                        <div id="missing-msg-status" style="margin-top:8px;font-size:0.82rem;font-weight:600;"></div>
+                    </div>
+                </div>
+                                </div>
+                <!-- END WRAPPER QUẢN LÝ CUỘC THI -->
                 <div style="background:#eff6ff; border:1.5px solid #3b82f6; padding:12px; border-radius:10px; margin-bottom:14px;">
                     <h4 style="color:#1e40af; font-size:0.95rem; margin-bottom:10px;"><i class="fa-solid fa-gears"></i> CẤU HÌNH HỆ THỐNG & HẠN NỘP ĐIỂM</h4>
                     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:10px;">
@@ -465,16 +596,6 @@
                     </div>
                 </div>
 
-                <div style="background:#f8fafc; border:1.5px solid var(--border); padding:12px; border-radius:10px; margin-bottom:14px;">
-                    <h4 style="color:#1e3a8a; font-size:0.95rem; margin-bottom:8px;"><i class="fa-solid fa-scroll"></i> ĐĂNG BẢNG TIN LỚP</h4>
-                    <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap;">
-                        <select id="auto-report-week" style="padding:8px; border-radius:8px; border:1px solid #cbd5e1; font-weight:600; width:auto;"></select>
-                        <button class="btn-action" style="background:#0ea5e9; font-size:0.8rem; padding:8px 12px;" onclick="window.generateAutoReport()"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo báo cáo tự động</button>
-                    </div>
-                    <div class="form-group"><input type="text" id="admin-notice-title" placeholder="Tiêu đề thông báo..."></div>
-                    <div class="form-group"><textarea id="admin-notice-content" rows="4" placeholder="Nội dung thông báo..."></textarea></div>
-                    <button class="btn-action" style="width:100%; font-size:0.9rem;" onclick="window.publishAnnouncement()"><i class="fa-solid fa-paper-plane"></i> Gửi Thông Báo Lên Bảng Tin</button>
-                </div>
             </div>
         </div>
 
@@ -610,7 +731,8 @@
         };
 
         window.STATE = {
-            students: [], phones: {}, positions: {}, emulation: {}, map: {}, notices: [], duty: {}, officialGrades: {}, config: {}
+                 students: [], phones: {}, positions: {}, emulation: {}, map: {}, notices: [], duty: {}, officialGrades: {}, config: {},
+            photoContests: {}, photoSubmissions: {}, driveConfig: {}
         };
 window.getWeekDeadlines = function(wNum) {
     let startDateStr = (STATE && STATE.config && STATE.config.startDate) ? STATE.config.startDate : "2026-09-07";
@@ -653,6 +775,9 @@ window.getWeekDeadlines = function(wNum) {
         STATE.map = m;
     }
     if (!STATE.notices || !Array.isArray(STATE.notices)) STATE.notices = [];
+        if (!STATE.photoContests || typeof STATE.photoContests !== 'object') STATE.photoContests = {};
+    if (!STATE.photoSubmissions || typeof STATE.photoSubmissions !== 'object') STATE.photoSubmissions = {};
+    if (!STATE.driveConfig || typeof STATE.driveConfig !== 'object') STATE.driveConfig = { folderId:'', secretKey:'', appsScriptUrl:'' };
     if (!STATE.duty || typeof STATE.duty !== 'object') STATE.duty = {};
     if (!STATE.officialGrades || typeof STATE.officialGrades !== 'object') STATE.officialGrades = {};
     if (!STATE.config || typeof STATE.config !== 'object' || !STATE.config.schoolName) {
@@ -680,6 +805,9 @@ window.onload = function() {
         let m = localStorage.getItem('map'); if(m && m !== "null") STATE.map = JSON.parse(m);
         let n = localStorage.getItem('notices'); if(n && n !== "null") STATE.notices = JSON.parse(n);
         let d = localStorage.getItem('duty'); if(d && d !== "null") STATE.duty = JSON.parse(d);
+                let pc = localStorage.getItem('photoContests'); if(pc && pc !== "null") STATE.photoContests = JSON.parse(pc);
+        let ps = localStorage.getItem('photoSubmissions'); if(ps && ps !== "null") STATE.photoSubmissions = JSON.parse(ps);
+        let dc = localStorage.getItem('driveConfig'); if(dc && dc !== "null") STATE.driveConfig = JSON.parse(dc);
         let og = localStorage.getItem('officialGrades'); if(og && og !== "null") STATE.officialGrades = JSON.parse(og);
         let c = localStorage.getItem('config'); 
         if(c && c !== "null") {
@@ -706,6 +834,9 @@ window.onload = function() {
                     if(data.map && data.map !== "null") STATE.map = JSON.parse(data.map);
                     if(data.notices && data.notices !== "null") STATE.notices = JSON.parse(data.notices);
                     if(data.duty && data.duty !== "null") STATE.duty = JSON.parse(data.duty);
+                                        if(data.photoContests && data.photoContests !== "null") STATE.photoContests = JSON.parse(data.photoContests);
+                    if(data.photoSubmissions && data.photoSubmissions !== "null") STATE.photoSubmissions = JSON.parse(data.photoSubmissions);
+                    if(data.driveConfig && data.driveConfig !== "null") STATE.driveConfig = JSON.parse(data.driveConfig);
                     if(data.officialGrades && data.officialGrades !== "null") STATE.officialGrades = JSON.parse(data.officialGrades);
                     if(data.config && data.config !== "null") STATE.config = { ...STATE.config, ...JSON.parse(data.config) };
                     
@@ -738,6 +869,8 @@ window.onload = function() {
             try { window.renderAdminAnnouncementsManager(); } catch(e) {}
             try { window.renderPublicDuty(); } catch(e) {}
             try { window.renderAdminZaloSummary(); } catch(e) {}
+                        try { window.renderPublicPhotoSection(); } catch(e) {}
+            try { window.renderAdminContestManager(); } catch(e) {}
         }
 
         window.updateConfigUI = function() {
@@ -3075,7 +3208,7 @@ window.resetDutyAuth = function() {
         container.innerHTML = ""; // Xóa sạch HTML cũ để ngăn lỗi lưu đè
     }
 };
-// 1. Hàm tính ngày hạn nộp theo số tuần
+
 // 1. Hàm tính ngày hạn nộp theo số tuần (ĐÃ MỞ KHÓA ĐỒNG BỘ CẤU HÌNH TAB 5)
 
 
@@ -3367,6 +3500,616 @@ document.addEventListener("DOMContentLoaded", function() {
 // ============ CHẶN CHUỘT PHẢI + BẢN QUYỀN ============
 document.addEventListener('contextmenu', e => e.preventDefault());
 
+/* =========================================================
+   CHỨC NĂNG NỘP ẢNH MINH CHỨNG
+========================================================= */
+const SUPER_ADMIN_PASS = "master2026@admin"; // <-- ĐỔI MẬT KHẨU TẠI ĐÂY
+let _bannerClickCount = 0, _bannerClickTimer = null;
+
+document.addEventListener('DOMContentLoaded', function(){
+    let banner = document.querySelector('.banner-line-1');
+    if(banner){
+        banner.style.cursor = 'default';
+        banner.addEventListener('click', function(){
+            _bannerClickCount++;
+            clearTimeout(_bannerClickTimer);
+            _bannerClickTimer = setTimeout(function(){_bannerClickCount=0;}, 2000);
+            if(_bannerClickCount >= 5){
+                _bannerClickCount = 0;
+                let blk = document.getElementById('superAdminBlock');
+                if(blk){ blk.classList.add('show'); blk.scrollIntoView({behavior:'smooth',block:'center'}); }
+            }
+        });
+    }
+});
+
+window.unlockSuperAdmin = function(){
+    let pass = document.getElementById('superAdminPass').value;
+    if(pass !== SUPER_ADMIN_PASS){ alert("Sai mật khẩu!"); return; }
+    document.getElementById('superAdminLocked').style.display = 'none';
+    document.getElementById('superAdminUnlocked').style.display = 'block';
+    document.getElementById('sa-folder-id').value = STATE.driveConfig.folderId || '';
+    document.getElementById('sa-secret-key').value = STATE.driveConfig.secretKey || '';
+    document.getElementById('sa-apps-url').value = STATE.driveConfig.appsScriptUrl || '';
+};
+
+window.lockSuperAdmin = function(){
+    document.getElementById('superAdminLocked').style.display = 'block';
+    document.getElementById('superAdminUnlocked').style.display = 'none';
+    document.getElementById('superAdminPass').value = '';
+    // Ẩn luôn cả khối Super Admin
+    document.getElementById('superAdminBlock').classList.remove('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.saveSuperAdminConfig = function(){
+    STATE.driveConfig.folderId = document.getElementById('sa-folder-id').value.trim();
+    STATE.driveConfig.secretKey = document.getElementById('sa-secret-key').value.trim();
+    STATE.driveConfig.appsScriptUrl = document.getElementById('sa-apps-url').value.trim();
+    window.saveData('driveConfig', STATE.driveConfig);
+    alert("✅ Đã lưu cấu hình hệ thống!");
+};
+
+window.testDriveConnection = function(){
+    let url = document.getElementById('sa-apps-url').value.trim();
+    let result = document.getElementById('sa-test-result');
+    if(!url){ result.innerHTML = '<span style="color:#fca5a5;">Chưa có URL Apps Script.</span>'; return; }
+    result.innerHTML = '<span style="color:#93c5fd;"><i class="fa-solid fa-spinner fa-spin"></i> Đang test...</span>';
+    fetch(url, { method: 'GET', mode: 'no-cors' })
+        .then(function(){ result.innerHTML = '<span style="color:#86efac;">✅ Kết nối OK</span>'; })
+        .catch(function(err){ result.innerHTML = '<span style="color:#fca5a5;">❌ Lỗi: ' + err.message + '</span>'; });
+};
+
+/* ============ QUẢN LÝ CUỘC THI ============ */
+window.createPhotoContest = function(){
+    let name = document.getElementById('pc-name').value.trim();
+    let deadline = document.getElementById('pc-deadline').value;
+    let max = parseInt(document.getElementById('pc-max').value) || 3;
+    if(!name){ alert("Nhập tên cuộc thi!"); return; }
+    if(!deadline){ alert("Chọn hạn nộp!"); return; }
+    let id = 'contest_' + Date.now();
+    STATE.photoContests[id] = { name:name, deadline:deadline, maxPhotos:max, active:true, createdAt:new Date().toISOString() };
+    window.saveData('photoContests', STATE.photoContests);
+    document.getElementById('pc-name').value = '';
+    document.getElementById('pc-deadline').value = '';
+    document.getElementById('pc-max').value = 3;
+    window.renderAdminContestManager();
+    window.renderPublicPhotoSection();
+    alert("✅ Đã tạo cuộc thi!");
+};
+
+window.toggleContestActive = function(id){
+    if(!STATE.photoContests[id]) return;
+    STATE.photoContests[id].active = !STATE.photoContests[id].active;
+    window.saveData('photoContests', STATE.photoContests);
+    window.renderAdminContestManager();
+    window.renderPublicPhotoSection();
+};
+
+window.deleteContest = function(id){
+    if(!confirm("Xóa cuộc thi này? Ảnh đã nộp trên Drive vẫn còn nguyên.")) return;
+    delete STATE.photoContests[id];
+    if(STATE.photoSubmissions[id]) delete STATE.photoSubmissions[id];
+    window.saveData('photoContests', STATE.photoContests);
+    window.saveData('photoSubmissions', STATE.photoSubmissions);
+    window.renderAdminContestManager();
+    window.renderPublicPhotoSection();
+};
+
+window.renderAdminContestManager = function(){
+    let tbody = document.getElementById('admin-contest-tbody');
+    let trackSel = document.getElementById('admin-track-contest');
+    if(!tbody) return;
+    tbody.innerHTML = '';
+    if(trackSel) trackSel.innerHTML = '<option value="">-- Chọn cuộc thi --</option>';
+
+    let list = Object.entries(STATE.photoContests || {});
+    if(list.length === 0){
+        tbody.innerHTML = '<tr><td colspan="6" style="padding:12px;font-style:italic;color:#9a3412;">Chưa có cuộc thi nào.</td></tr>';
+        return;
+    }
+    list.sort(function(a,b){ return (b[1].createdAt||'').localeCompare(a[1].createdAt||''); });
+    list.forEach(function(pair, idx){
+        let id = pair[0], c = pair[1];
+        let dl = new Date(c.deadline);
+        let dlStr = isNaN(dl) ? '?' : dl.getDate()+'/'+(dl.getMonth()+1)+' '+dl.getHours()+'h'+String(dl.getMinutes()).padStart(2,'0');
+        let isExpired = new Date() > dl;
+        let statusBadge = c.active
+            ? (isExpired ? '<span style="color:#92400e;font-weight:700;">⏰ Hết hạn</span>' : '<span style="color:#166534;font-weight:700;">🟢 Đang mở</span>')
+            : '<span style="color:#64748b;font-weight:700;">⚪ Đã đóng</span>';
+        tbody.innerHTML += '<tr>'
+            + '<td>'+(idx+1)+'</td>'
+            + '<td style="text-align:left;font-weight:600;">'+c.name+'</td>'
+            + '<td>'+dlStr+'</td>'
+            + '<td>'+c.maxPhotos+'</td>'
+            + '<td>'+statusBadge+'</td>'
+            + '<td><button class="btn-action" style="background:'+(c.active?'#64748b':'#16a34a')+';padding:4px 8px;font-size:0.72rem;margin:1px;" onclick="window.toggleContestActive(\''+id+'\')">'+(c.active?'Đóng':'Mở')+'</button>'
+            + '<button class="btn-action" style="background:#dc2626;padding:4px 8px;font-size:0.72rem;margin:1px;" onclick="window.deleteContest(\''+id+'\')">Xóa</button></td></tr>';
+        if(trackSel) trackSel.innerHTML += '<option value="'+id+'">'+c.name+'</option>';
+    });
+};
+
+/* ============ TAB 1: HIỂN THỊ BANNER + KHU NỘP ============ */
+window.renderPublicPhotoSection = function(){
+    let section = document.getElementById('photo-contest-section');
+    if(!section) return;
+
+    let now = new Date();
+    let activeList = Object.entries(STATE.photoContests || {})
+        .filter(function(pair){ let c = pair[1]; return c.active && new Date(c.deadline) > now; });
+
+    if(activeList.length === 0){ section.style.display = 'none'; return; }
+    section.style.display = 'block';
+
+    let bannerHTML = '';
+    activeList.forEach(function(pair){
+        let id = pair[0], c = pair[1];
+        let dl = new Date(c.deadline);
+        let dlStr = String(dl.getHours()).padStart(2,'0')+'h'+String(dl.getMinutes()).padStart(2,'0')+' ngày '+dl.getDate()+'/'+(dl.getMonth()+1)+'/'+dl.getFullYear();
+        bannerHTML += '<div class="photo-contest-card" style="margin-bottom:8px;">'
+            + '<div class="photo-contest-title"><i class="fa-solid fa-bullhorn"></i> '+c.name+'</div>'
+            + '<div class="photo-contest-meta">📅 Hạn: <b>'+dlStr+'</b> — Tối đa <b>'+c.maxPhotos+' ảnh</b></div>'
+            + '<div style="font-size:0.85rem;color:#7c2d12;">📸 Nộp minh chứng <span class="photo-contest-link" onclick="window.togglePhotoForm(\''+id+'\')">tại đây</span></div>'
+            + '</div>';
+    });
+
+    let formHTML = '<div id="photo-upload-section" style="display:none; background:#fff; border:1.5px solid #8b5cf6; padding:12px; border-radius:10px; margin-top:8px;">';
+    formHTML += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #e9d5ff; padding-bottom:6px;">';
+    formHTML += '<h4 style="color:#6b21a8; font-size:0.95rem; margin:0;"><i class="fa-solid fa-camera-retro"></i> NỘP ẢNH MINH CHỨNG</h4>';
+    formHTML += '<button type="button" onclick="window.togglePhotoForm()" style="background:#fee2e2; color:#991b1b; border:none; padding:6px 10px; border-radius:6px; font-weight:700; cursor:pointer; font-size:0.75rem;">✕ Đóng</button>';
+    formHTML += '</div>';
+    formHTML += '<div class="form-group"><label style="font-size:0.75rem;font-weight:700;color:#334155;text-transform:uppercase;">Học sinh nộp bài</label><select id="photo-student-select" style="width:100%;padding:8px;border-radius:8px;border:1.5px solid #cbd5e1;"></select></div>';
+    formHTML += '<div class="form-group"><label style="font-size:0.75rem;font-weight:700;color:#334155;text-transform:uppercase;">Cuộc thi đang nộp</label><div id="photo-contest-display" style="padding:10px;background:#faf5ff;border:1.5px solid #8b5cf6;border-radius:8px;font-weight:700;color:#6b21a8;font-size:0.9rem;"></div></div>';
+    formHTML += '<div class="photo-upload-box">';
+    formHTML += '<div id="photo-contest-info" style="font-size:0.8rem;color:#6b21a8;margin-bottom:8px;"></div>';
+    formHTML += '<input type="file" id="photo-file-input" accept="image/*" multiple onchange="window.handlePhotoSelect(event)" style="display:none;">';
+    formHTML += '<button type="button" class="btn-action" style="background:#8b5cf6;width:100%;padding:10px;" onclick="document.getElementById(\'photo-file-input\').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn ảnh từ thiết bị</button>';
+    formHTML += '<div class="photo-preview-grid" id="photo-preview-grid"></div>';
+    formHTML += '<div class="photo-progress" id="photo-progress"><div class="photo-progress-bar" id="photo-progress-bar"></div></div>';
+    formHTML += '<button type="button" id="photo-submit-btn" class="btn-action" style="background:#16a34a;width:100%;padding:12px;margin-top:10px;font-size:0.95rem;display:none;" onclick="window.submitPhotoContest()"><i class="fa-solid fa-paper-plane"></i> GỬI BÀI NỘP ẢNH</button>';
+    formHTML += '<div id="photo-upload-status" style="margin-top:10px;font-size:0.82rem;"></div>';
+    formHTML += '</div></div>';
+
+    section.innerHTML = bannerHTML + formHTML;
+
+    let studentSel = document.getElementById('photo-student-select');
+    if(studentSel){
+        studentSel.innerHTML = '<option value="">-- Chọn học sinh --</option>';
+        STATE.students.forEach(function(n,i){ studentSel.innerHTML += '<option value="'+(i+1)+'">STT '+(i+1)+' - '+n+'</option>'; });
+    }
+    
+};
+
+window._currentContestId = null;
+window.togglePhotoForm = function(contestId){
+    let form = document.getElementById('photo-upload-section');
+    if(!form) return;
+    if(form.style.display === 'none'){
+        if(contestId) window._currentContestId = contestId;
+        form.style.display = 'block';
+        window.onPhotoContestChange();
+        setTimeout(function(){ form.scrollIntoView({behavior:'smooth', block:'start'}); }, 100);
+    } else {
+        form.style.display = 'none';
+    }
+};
+
+window.onPhotoContestChange = function(){
+    let contestId = window._currentContestId;
+    let info = document.getElementById('photo-contest-info');
+    let fileInput = document.getElementById('photo-file-input');
+    let previewGrid = document.getElementById('photo-preview-grid');
+    let submitBtn = document.getElementById('photo-submit-btn');
+    let status = document.getElementById('photo-upload-status');
+    if(!info) return;
+    previewGrid.innerHTML = '';
+    fileInput.value = '';
+    status.innerHTML = '';
+    submitBtn.style.display = 'none';
+    window._photoFiles = [];
+
+    if(!contestId || !STATE.photoContests[contestId]){
+        info.innerHTML = 'Vui lòng chọn cuộc thi để xem yêu cầu.';
+        fileInput.disabled = true;
+        return;
+    }
+    let c = STATE.photoContests[contestId];
+        let display = document.getElementById('photo-contest-display');
+    if(display) display.innerHTML = '📸 ' + c.name;
+    info.innerHTML = '📌 Yêu cầu: Tối đa <b>'+c.maxPhotos+' ảnh</b>. Ảnh sẽ được tự động nén trước khi gửi.';
+    fileInput.disabled = false;
+};
+
+window._photoFiles = [];
+window.handlePhotoSelect = function(ev){
+    let contestId = window._currentContestId;
+    if(!contestId) return;
+    let max = STATE.photoContests[contestId].maxPhotos;
+    let files = Array.from(ev.target.files || []);
+    if(files.length > max){ alert('Chỉ được chọn tối đa '+max+' ảnh!'); files = files.slice(0, max); }
+    window._photoFiles = files;
+    window._renderPhotoPreview();
+    document.getElementById('photo-submit-btn').style.display = files.length > 0 ? 'inline-flex' : 'none';
+};
+
+window._renderPhotoPreview = function(){
+    let grid = document.getElementById('photo-preview-grid');
+    grid.innerHTML = '';
+    window._photoFiles.forEach(function(f, i){
+        let reader = new FileReader();
+        reader.onload = function(e){
+            grid.innerHTML += '<div class="photo-preview-item"><img src="'+e.target.result+'"><button class="remove-btn" onclick="window.removePhoto('+i+')">✕</button></div>';
+        };
+        reader.readAsDataURL(f);
+    });
+};
+
+window.removePhoto = function(idx){
+    window._photoFiles.splice(idx, 1);
+    let dt = new DataTransfer();
+    window._photoFiles.forEach(function(f){ dt.items.add(f); });
+    document.getElementById('photo-file-input').files = dt.files;
+    document.getElementById('photo-submit-btn').style.display = window._photoFiles.length > 0 ? 'inline-flex' : 'none';
+    window._renderPhotoPreview();
+};
+
+/* ============ NÉN ẢNH ============ */
+function compressImage(file, maxDim, quality){
+    return new Promise(function(resolve, reject){
+        let reader = new FileReader();
+        reader.onload = function(e){
+            let img = new Image();
+            img.onload = function(){
+                let w = img.width, h = img.height;
+                if(w > maxDim || h > maxDim){
+                    if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+                    else { w = Math.round(w * maxDim / h); h = maxDim; }
+                }
+                let canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                let dataUrl = canvas.toDataURL('image/jpeg', quality);
+                resolve({ base64: dataUrl.split(',')[1], mimeType: 'image/jpeg', fileName: file.name.replace(/\.[^.]+$/, '.jpg') });
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+/* ============ SUBMIT ẢNH LÊN DRIVE ============ */
+window.submitPhotoContest = async function(){
+    let contestId = window._currentContestId;
+    let stt = document.getElementById('photo-student-select').value;
+    if(!contestId || !stt){ alert("Vui lòng chọn học sinh và cuộc thi!"); return; }
+    if(!window._photoFiles || window._photoFiles.length === 0){ alert("Chưa chọn ảnh!"); return; }
+
+    let cfg = STATE.driveConfig || {};
+    if(!cfg.appsScriptUrl || !cfg.folderId){
+        alert("Hệ thống chưa được cấu hình. Vui lòng liên hệ chủ web!");
+        return;
+    }
+
+    let contest = STATE.photoContests[contestId];
+    let studentName = STATE.students[stt-1];
+    let btn = document.getElementById('photo-submit-btn');
+    let status = document.getElementById('photo-upload-status');
+    let progress = document.getElementById('photo-progress');
+    let bar = document.getElementById('photo-progress-bar');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang nén ảnh...';
+    progress.style.display = 'block'; bar.style.width = '5%';
+    status.innerHTML = '';
+
+    try {
+        let compressed = [];
+        for(let i=0; i<window._photoFiles.length; i++){
+            let r = await compressImage(window._photoFiles[i], 1400, 0.82);
+            compressed.push(r);
+            bar.style.width = (10 + (i+1)/window._photoFiles.length * 60) + '%';
+        }
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gửi lên Drive...';
+        bar.style.width = '75%';
+
+        let payload = {
+            key: cfg.secretKey || '',
+            folderId: cfg.folderId,
+            contestName: contest.name,
+            studentName: studentName,
+            studentId: stt,
+            files: compressed
+        };
+
+        let res = await fetch(cfg.appsScriptUrl, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+        let data = await res.json();
+        if(!data.ok) throw new Error(data.error || 'Lỗi không xác định');
+
+        bar.style.width = '100%';
+        if(!STATE.photoSubmissions[contestId]) STATE.photoSubmissions[contestId] = {};
+        STATE.photoSubmissions[contestId][stt] = {
+            studentName: studentName,
+            count: compressed.length,
+            submittedAt: new Date().toISOString(),
+            files: data.files || [],
+            folderUrl: data.folderUrl || ''
+        };
+        window.saveData('photoSubmissions', STATE.photoSubmissions);
+
+        status.innerHTML = '<div style="background:#dcfce7;color:#166534;padding:10px;border-radius:8px;font-weight:700;">✅ Nộp thành công ' + compressed.length + ' ảnh!</div>';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> ĐÃ NỘP';
+        document.getElementById('photo-preview-grid').innerHTML = '';
+        document.getElementById('photo-file-input').value = '';
+        window._photoFiles = [];
+        setTimeout(function(){ progress.style.display='none'; bar.style.width='0%'; }, 2000);
+    } catch(err){
+        status.innerHTML = '<div style="background:#fee2e2;color:#991b1b;padding:10px;border-radius:8px;font-weight:700;">❌ Lỗi: ' + err.message + '</div>';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> GỬI BÀI NỘP ẢNH';
+        progress.style.display = 'none';
+    }
+};
+
+/* ============ THEO DÕI NỘP BÀI (TAB 5) ============ */
+window.renderPhotoTracking = function(){
+    let contestId = document.getElementById('admin-track-contest').value;
+    let tbody = document.getElementById('admin-photo-tracking-tbody');
+    if(!tbody) return;
+    if(!contestId || !STATE.photoContests[contestId]){
+        tbody.innerHTML = '<tr><td colspan="6" style="padding:12px;font-style:italic;color:#9a3412;">Chọn cuộc thi để xem.</td></tr>';
+        return;
+    }
+    let subs = STATE.photoSubmissions[contestId] || {};
+    let deadline = new Date(STATE.photoContests[contestId].deadline);
+    tbody.innerHTML = '';
+    let doneCount = 0;
+
+    STATE.students.forEach(function(name, idx){
+        let stt = idx + 1;
+        let sub = subs[stt];
+        let statusHtml, timeStr = '-';
+        if(sub){
+            doneCount++;
+            let late = new Date(sub.submittedAt) > deadline;
+            statusHtml = late ? '<span class="status-badge-late">⏰ Nộp muộn</span>' : '<span class="status-badge-done">✅ Đã nộp</span>';
+            let d = new Date(sub.submittedAt);
+            timeStr = d.getDate()+'/'+(d.getMonth()+1)+' '+d.getHours()+'h'+String(d.getMinutes()).padStart(2,'0');
+        } else {
+            statusHtml = '<span class="status-badge-miss">❌ Chưa nộp</span>';
+        }
+        tbody.innerHTML += '<tr>'
+            + '<td>'+stt+'</td>'
+            + '<td style="text-align:left;font-weight:600;">'+name+'</td>'
+            + '<td>'+(sub ? sub.count : 0)+'</td>'
+            + '<td>'+statusHtml+'</td>'
+            + '<td>'+timeStr+'</td>'
+            + '<td>'+(sub && sub.folderUrl ? '<a href="'+sub.folderUrl+'" target="_blank" class="btn-action" style="background:#0ea5e9;padding:4px 8px;font-size:0.72rem;text-decoration:none;">Xem Drive</a>' : '-')+'</td>'
+            + '</tr>';
+    });
+
+    let summaryRow = '<tr style="background:#fef3c7;font-weight:700;color:#92400e;"><td colspan="6" style="padding:8px;text-align:center;">📊 Đã nộp: ' + doneCount + '/' + STATE.students.length + ' học sinh</td></tr>';
+    tbody.innerHTML = summaryRow + tbody.innerHTML;
+};
+
+/* =========================================================
+   SOẠN TIN NHẮN NHẮC NHỞ NỘP ẢNH
+========================================================= */
+const MSG_TEMPLATE_DEFAULT = 
+'GVCN lớp {ten_lop} thông báo:\n\n' +
+'📸 Cuộc thi "{ten_cuoc_thi}" sắp hết hạn vào {han_nop}.\n\n' +
+'Danh sách {so_luong} bạn CHƯA nộp ảnh minh chứng:\n' +
+'{danh_sach_chua_nop}\n\n' +
+'Vui lòng vào web của lớp nộp bài trước hạn. Trân trọng!\n\n' +
+'{ten_gv}';
+
+window.insertMsgVar = function(varName){
+    let ta = document.getElementById('missing-msg-textarea');
+    if(!ta) return;
+    let start = ta.selectionStart || 0;
+    let end = ta.selectionEnd || 0;
+    let text = ta.value;
+    ta.value = text.slice(0, start) + varName + text.slice(end);
+    ta.focus();
+    ta.selectionStart = ta.selectionEnd = start + varName.length;
+};
+
+window.generateMissingMessage = function(){
+    let contestId = document.getElementById('admin-track-contest').value;
+    if(!contestId){ alert("Vui lòng chọn cuộc thi trước!"); return; }
+    let ta = document.getElementById('missing-msg-textarea');
+    if(ta && ta.value.trim() !== '' && !confirm("Nội dung hiện tại sẽ bị thay thế. Tiếp tục?")) return;
+    ta.value = MSG_TEMPLATE_DEFAULT;
+    window._updateMsgPreview();
+};
+
+window._getMissingData = function(){
+    let contestId = document.getElementById('admin-track-contest').value;
+    if(!contestId) return null;
+    let subs = STATE.photoSubmissions[contestId] || {};
+    let missing = [];
+    let submitted = [];
+    STATE.students.forEach(function(name, idx){
+        let stt = idx + 1;
+        if(subs[stt]) submitted.push(name);
+        else missing.push({ stt: stt, name: name });
+    });
+    return {
+        contestId: contestId,
+        contest: STATE.photoContests[contestId],
+        missing: missing,
+        submitted: submitted,
+        total: STATE.students.length
+    };
+};
+
+window._fillTemplate = function(template, missingList){
+    let data = window._getMissingData();
+    if(!data) return "";
+    let contest = data.contest;
+    let dl = new Date(contest.deadline);
+    let dlStr = String(dl.getHours()).padStart(2,'0') + 'h' + String(dl.getMinutes()).padStart(2,'0') + ' ngày ' + dl.getDate() + '/' + (dl.getMonth()+1) + '/' + dl.getFullYear();
+    
+    let dsChuaNop = missingList.map(function(m, i){
+        return (i+1) + '. ' + m.name;
+    }).join('\n');
+    
+    return template
+        .replace(/\{ten_lop\}/g, STATE.config.className || '')
+        .replace(/\{ten_cuoc_thi\}/g, contest.name)
+        .replace(/\{han_nop\}/g, dlStr)
+        .replace(/\{danh_sach_chua_nop\}/g, dsChuaNop)
+        .replace(/\{so_luong\}/g, missingList.length)
+        .replace(/\{ten_gv\}/g, STATE.config.teacherName || 'GVCN');
+};
+
+window._updateMsgPreview = function(){
+    let data = window._getMissingData();
+    let info = document.getElementById('msg-preview-info');
+    if(!info || !data) return;
+    if(data.missing.length === 0){
+        info.innerHTML = '🎉 Tất cả học sinh đều đã nộp — không có ai để nhắc!';
+        info.style.color = '#166534';
+        return;
+    }
+    info.innerHTML = '📋 Sẽ nhắc <b>' + data.missing.length + '</b> học sinh chưa nộp (đã nộp: ' + data.submitted.length + '/' + data.total + ').';
+    info.style.color = '#7c2d12';
+};
+
+window.copyMissingMsg = function(){
+    let ta = document.getElementById('missing-msg-textarea');
+    let status = document.getElementById('missing-msg-status');
+    if(!ta || !ta.value.trim()){ alert("Chưa có nội dung tin nhắn! Bấm 'Tạo tin tự động' trước."); return; }
+    
+    let data = window._getMissingData();
+    if(!data){ alert("Chưa chọn cuộc thi!"); return; }
+    if(data.missing.length === 0){ 
+        status.innerHTML = '<span style="color:#166534;">🎉 Tất cả học sinh đều đã nộp!</span>';
+        return; 
+    }
+
+    let finalMsg = window._fillTemplate(ta.value, data.missing);
+    
+    if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(finalMsg).then(function(){
+            status.innerHTML = '<span style="color:#166534;">✅ Đã copy tin nhắn chung! (' + data.missing.length + ' học sinh) — Dán vào Zalo để gửi.</span>';
+        }).catch(function(){
+            window._fallbackCopy(finalMsg, status);
+        });
+    } else {
+        window._fallbackCopy(finalMsg, status);
+    }
+};
+
+window.copyEachStudentMsg = function(){
+    let ta = document.getElementById('missing-msg-textarea');
+    let status = document.getElementById('missing-msg-status');
+    if(!ta || !ta.value.trim()){ alert("Chưa có nội dung tin nhắn! Bấm 'Tạo tin tự động' trước."); return; }
+    
+    let data = window._getMissingData();
+    if(!data){ alert("Chưa chọn cuộc thi!"); return; }
+    if(data.missing.length === 0){ 
+        status.innerHTML = '<span style="color:#166534;">🎉 Tất cả học sinh đều đã nộp!</span>';
+        return; 
+    }
+
+    let parts = data.missing.map(function(m, i){
+        let singleList = [m];
+        let singleMsg = window._fillTemplate(ta.value, singleList);
+        return '━━━ Tin ' + (i+1) + '/' + data.missing.length + ': ' + m.name + ' ━━━\n' + singleMsg;
+    });
+    
+    let finalText = parts.join('\n\n');
+    
+    if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(finalText).then(function(){
+            status.innerHTML = '<span style="color:#166534;">✅ Đã copy ' + data.missing.length + ' tin nhắn riêng! Mở Zalo, dán lần lượt từng phần vào từng em.</span>';
+        }).catch(function(){
+            window._fallbackCopy(finalText, status);
+        });
+    } else {
+        window._fallbackCopy(finalText, status);
+    }
+};
+
+window._fallbackCopy = function(text, statusEl){
+    let tmp = document.createElement('textarea');
+    tmp.value = text;
+    tmp.style.position = 'fixed';
+    tmp.style.left = '-9999px';
+    document.body.appendChild(tmp);
+    tmp.select();
+    try {
+        document.execCommand('copy');
+        if(statusEl) statusEl.innerHTML = '<span style="color:#166534;">✅ Đã copy vào clipboard!</span>';
+    } catch(e){
+        if(statusEl) statusEl.innerHTML = '<span style="color:#dc2626;">❌ Không copy được. Hãy copy thủ công từ khung soạn tin.</span>';
+        prompt("Copy thủ công:", text);
+    }
+    document.body.removeChild(tmp);
+};
+
+document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(function(){
+        let ta = document.getElementById('missing-msg-textarea');
+        if(ta) ta.addEventListener('input', window._updateMsgPreview);
+        
+        let sel = document.getElementById('admin-track-contest');
+        if(sel){
+            sel.addEventListener('change', function(){
+                let ta2 = document.getElementById('missing-msg-textarea');
+                if(ta2 && !ta2.value.trim()) ta2.value = MSG_TEMPLATE_DEFAULT;
+                window._updateMsgPreview();
+            });
+        }
+    }, 800);
+});
+
+/* ============ TOGGLE QUẢN LÝ CUỘC THI + AUTO MOVE XUỐNG CUỐI TAB 5 ============ */
+window.toggleContestManager = function(){
+    let box = document.getElementById('contestManagerBox');
+    let arrow = document.getElementById('contestManagerArrow');
+    if(!box) return;
+    if(box.style.display === 'none' || box.style.display === ''){
+        box.style.display = 'block';
+        if(arrow) arrow.style.transform = 'rotate(180deg)';
+    } else {
+        box.style.display = 'none';
+        if(arrow) arrow.style.transform = 'rotate(0deg)';
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(function(){
+        let box = document.getElementById('contestManagerBox');
+        let wrapper = document.getElementById('contestManagerWrapper');
+        if(!box || !wrapper) return;
+        box.style.display = 'none';
+
+        let tab5 = document.getElementById('panel-tab5');
+        if(!tab5) return;
+        let card = tab5.querySelector('.card');
+        if(!card) return;
+
+        if(card.lastElementChild !== wrapper){
+            card.appendChild(wrapper);
+        }
+    }, 1200);
+});
+// Tự động ẩn Super Admin khi rời Tab 5
+document.addEventListener('click', function(e){
+    let btn = e.target.closest('.btn-nav-card');
+    if(!btn) return;
+    let tabId = btn.id ? btn.id.replace('nav-btn-','') : '';
+    if(tabId !== 'tab5'){
+        let blk = document.getElementById('superAdminBlock');
+        if(blk) blk.classList.remove('show');
+    }
+});
 console.log('%c⚠️ CẢNH BÁO BẢN QUYỀN', 'color:#dc2626; font-size:28px; font-weight:bold; text-shadow: 2px 2px 0 #000;');
 console.log('%c📌 Sản phẩm thuộc bản quyền của: Cô giáo Trịnh Ngọc Ánh', 'color:#1e40af; font-size:16px; font-weight:bold;');
 console.log('%cGV Trường THPT Tân Yên số 2 - Bắc Ninh', 'color:#16a34a; font-size:16px;');
