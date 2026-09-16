@@ -344,28 +344,6 @@
         </div>
     </div>
 
-                <!-- TAB 4: PHÂN CÔNG TRỰC NHẬT -->
-        <div id="panel-tab4" class="view-panel">
-            <div class="card">
-                <div style="background: #f0fdfa; border: 1.5px solid #5eead4; border-radius: 10px; padding: 14px;">
-                    <h3 style="font-size: 0.95rem; color: #0f766e; margin-bottom: 12px;"><i class="fa-solid fa-broom"></i> PHÂN CÔNG TRỰC NHẬT CÁC NGÀY TRONG TUẦN</h3>
-                    
-                    <div class="input-control-bar" style="margin-bottom: 10px; background:#f0fdfa; border-color:#86efac; display:flex; gap:8px; align-items:center;">
-                        <label style="font-weight: 700; color: #166534;">Chọn tuần phân công:</label>
-                        <select id="duty-week-select" onchange="window.resetDutyAuth()" style="padding: 6px; border-radius: 6px; border: 1px solid #86efac; font-weight: bold; width:auto;"></select>
-                    </div>
-
-                    <div class="input-control-bar" style="margin-bottom: 12px; background:#f0fdfa; border-color:#86efac; display:flex; gap:8px; align-items:center;">
-                        <label style="font-weight: 700; color: #166534;">Mật khẩu Lớp phó LĐ:</label>
-                        <input type="password" id="duty-pass-input" placeholder="Mật khẩu..." style="padding: 6px; border-radius: 6px; border: 1px solid #86efac; width: 130px;">
-                        <button class="btn-action" onclick="window.verifyDutyAuth()" style="background: #0d9488; padding: 6px 14px;"><i class="fa-solid fa-lock-open"></i> Đăng nhập</button>
-                    </div>
-
-                    <div id="duty-entry-container" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #5eead4;"></div>
-                </div>
-            </div>
-        </div>
-
     <!-- TAB 5: QUẢN TRỊ DÀNH CHO GVCN -->
         <div id="panel-tab5" class="view-panel">
             <div class="card">
@@ -1031,7 +1009,7 @@ window.onload = function() {
             for(let i=1; i<=35; i++) wHtml += `<option value="Tuần ${i}">Tuần ${i}</option>`;
             
             document.getElementById("public-detail-week-select").innerHTML = wHtml;
-            document.getElementById("auto-report-week").innerHTML = wHtml;
+            //document.getElementById("auto-report-week").innerHTML = wHtml;
             document.getElementById("public-duty-week-select").innerHTML = wHtml;
             document.getElementById("duty-week-select").innerHTML = wHtml;
             document.getElementById("admin-zalo-week-select").innerHTML = wHtml;
