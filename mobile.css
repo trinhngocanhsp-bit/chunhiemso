@@ -1,0 +1,798 @@
+/* ============================================================
+   MOBILE REDESIGN — Sổ Chủ Nhiệm Điện Tử
+   Chỉ active khi màn hình ≤ 768px
+   Desktop giữ nguyên 100%
+============================================================ */
+
+@media (max-width: 768px) {
+
+    /* ===== BODY ===== */
+    body {
+        padding: 0 !important;
+        background: #f8fafc !important;
+    }
+    .container { padding: 0 !important; }
+
+    /* ===== BANNER ===== */
+    .modern-banner-wrapper {
+        background: linear-gradient(135deg, #60a5fa 0%, #2563eb 50%, #1e40af 100%) !important;
+        border-radius: 0 0 24px 24px !important;
+        padding: 22px 16px 26px !important;
+        margin-bottom: 0 !important;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(37,99,235,0.2) !important;
+    }
+    .modern-banner-wrapper::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 15% 25%, rgba(255,255,255,0.18) 0%, transparent 40%),
+            radial-gradient(circle at 85% 80%, rgba(255,255,255,0.12) 0%, transparent 40%);
+        pointer-events: none;
+    }
+
+    /* Ribbon trắng cho dòng 1 */
+    .banner-line-1 {
+        font-size: 1rem !important;
+        background: #fff !important;
+        color: #1d4ed8 !important;
+        padding: 8px 22px !important;
+        border-radius: 50px !important;
+        display: inline-block !important;
+        margin-bottom: 12px !important;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.15) !important;
+        transform: rotate(-1deg);
+        letter-spacing: -0.02em;
+        text-transform: none !important;
+        position: relative;
+        z-index: 2;
+    }
+
+    .banner-line-2 {
+        font-size: 0.85rem !important;
+        color: #fff !important;
+        font-weight: 700 !important;
+        margin-bottom: 4px !important;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .banner-line-3 {
+        font-size: 0.72rem !important;
+        color: rgba(255,255,255,0.92) !important;
+        margin-bottom: 10px !important;
+        position: relative;
+        z-index: 2;
+    }
+
+    .banner-week-badge {
+        background: rgba(255,255,255,0.22) !important;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        border: 1px solid rgba(255,255,255,0.35);
+        color: #fff !important;
+        padding: 6px 14px !important;
+        font-size: 0.75rem !important;
+        border-radius: 20px !important;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ===== 3 TAB CHÍNH ===== */
+    .main-tabs {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 10px !important;
+        padding: 0 12px !important;
+        margin-top: -14px !important;
+        margin-bottom: 16px !important;
+        position: relative;
+        z-index: 3;
+    }
+
+    .main-tab {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 6px !important;
+        background: #fff !important;
+        border: none !important;
+        border-radius: 18px !important;
+        padding: 20px 8px 12px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        min-height: 118px;
+        justify-content: center;
+    }
+
+    .main-tab::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: currentColor;
+    }
+
+    .main-tab.active {
+        background: #fff !important;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12) !important;
+        transform: translateY(-2px);
+    }
+
+    /* Màu riêng mỗi tab */
+    #nav-btn-tab1 { color: #f59e0b !important; }
+    #nav-btn-tab2 { color: #ec4899 !important; }
+    #nav-btn-tab3 { color: #3b82f6 !important; }
+
+    /* Ẩn số gốc, thay bằng icon FontAwesome */
+    .main-tab .num {
+        font-size: 0 !important;
+        width: 46px !important;
+        height: 46px !important;
+        border-radius: 14px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 auto 6px !important;
+        flex-shrink: 0;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .main-tab .num::before {
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 1.35rem;
+        color: #fff;
+        line-height: 1;
+    }
+    #nav-btn-tab1 .num::before { content: '\f015'; }   /* home */
+    #nav-btn-tab2 .num::before { content: '\f46d'; }   /* clipboard-list */
+    #nav-btn-tab3 .num::before { content: '\f3ed'; }   /* shield-halved */
+
+    .main-tab .num-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b) !important; }
+    .main-tab .num-2 { background: linear-gradient(135deg, #f472b6, #ec4899) !important; }
+    .main-tab .num-3 { background: linear-gradient(135deg, #60a5fa, #2563eb) !important; }
+
+    /* Badge số ở góc trên trái */
+    .main-tab::after {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        background: currentColor;
+        color: #fff;
+        font-size: 0.68rem;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
+    #nav-btn-tab1::after { content: '1'; }
+    #nav-btn-tab2::after { content: '2'; }
+    #nav-btn-tab3::after { content: '3'; }
+
+    .main-tab .txt { text-align: center !important; }
+    .main-tab .txt strong {
+        font-size: 0.72rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.02em !important;
+        line-height: 1.2 !important;
+        font-weight: 900 !important;
+        display: block !important;
+        margin-bottom: 2px;
+    }
+    #nav-btn-tab1 .txt strong { color: #92400e !important; }
+    #nav-btn-tab2 .txt strong { color: #9d174d !important; }
+    #nav-btn-tab3 .txt strong { color: #1e40af !important; }
+
+    .main-tab .txt small {
+        font-size: 0.62rem !important;
+        color: #64748b !important;
+        display: block !important;
+    }
+
+    .main-tab .lock-badge { display: none !important; }
+
+    /* ===== TAB CONTENT ===== */
+    .tab-content { padding: 0 12px 20px !important; }
+
+    /* ===== SIDEBAR → PILLS NAV ===== */
+    .layout-sidebar { display: block !important; }
+
+    .sidebar {
+        display: flex !important;
+        gap: 8px !important;
+        overflow-x: auto !important;
+        padding: 4px 0 10px !important;
+        margin-bottom: 12px !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        position: static !important;
+        max-height: none !important;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+
+    .sidebar .sidebar-title,
+    .sidebar .sidebar-group-title { display: none !important; }
+
+    .sidebar-item {
+        flex-shrink: 0 !important;
+        padding: 9px 16px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        background: #fff !important;
+        color: #475569 !important;
+        border-radius: 22px !important;
+        font-size: 0.78rem !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        transition: all 0.2s;
+        margin-bottom: 0 !important;
+        width: auto !important;
+    }
+
+    .sidebar-item .ind { display: none !important; }
+
+    /* Icon cho từng mục sidebar Tab 1 */
+    .sidebar-item[data-tab1="p-thongbao"]::before {
+        font-family: 'Font Awesome 6 Free'; font-weight: 900;
+        content: '\f0f3'; font-size: 0.85rem; margin-right: 2px;
+    }
+    .sidebar-item[data-tab1="p-tracuu"]::before {
+        font-family: 'Font Awesome 6 Free'; font-weight: 900;
+        content: '\f002'; font-size: 0.85rem; margin-right: 2px;
+    }
+    .sidebar-item[data-tab1="p-tkb"]::before {
+        font-family: 'Font Awesome 6 Free'; font-weight: 900;
+        content: '\f133'; font-size: 0.85rem; margin-right: 2px;
+    }
+    .sidebar-item[data-tab1="p-trucnhat"]::before {
+        font-family: 'Font Awesome 6 Free'; font-weight: 900;
+        content: '\f51a'; font-size: 0.85rem; margin-right: 2px;
+    }
+    .sidebar-item[data-tab1="p-sodo"]::before {
+        font-family: 'Font Awesome 6 Free'; font-weight: 900;
+        content: '\f00a'; font-size: 0.85rem; margin-right: 2px;
+    }
+
+    .sidebar-item.active {
+        background: linear-gradient(135deg, #3b82f6, #1e40af) !important;
+        color: #fff !important;
+        border-color: transparent !important;
+        box-shadow: 0 6px 20px rgba(37,99,235,0.25) !important;
+    }
+
+    /* ===== CONTENT PANEL ===== */
+    .content-panel {
+        border-radius: 18px !important;
+        padding: 14px !important;
+        border: 1px solid #f1f5f9 !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06) !important;
+        min-height: auto !important;
+    }
+
+    .content-panel .panel h2 {
+        font-size: 0.95rem !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 12px !important;
+    }
+
+    /* ===== MOBILE ACCORDION ===== */
+    /* Tab1: dùng sidebar pills → ẩn accordion */
+    #panel-tab1 .mobile-acc { display: none !important; }
+    /* Tab3: giữ accordion */
+    #panel-tab3 .mobile-acc { display: block !important; margin-top: 10px; }
+    /* Tab3: ẩn sidebar vì dùng accordion */
+    #panel-tab3 .sidebar { display: none !important; }
+
+    /* ===== CARD ===== */
+    .card { border-radius: 14px !important; padding: 12px !important; }
+
+    /* ===== FORM ===== */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 11px 14px !important;
+        border-radius: 12px !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-action {
+        padding: 11px 18px !important;
+        border-radius: 12px !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* ===== SEARCH BOX ===== */
+    .search-box { border-radius: 14px !important; padding: 14px !important; }
+
+    /* ===== TABLES ===== */
+    .table-responsive { border-radius: 12px !important; }
+    table { font-size: 0.78rem !important; }
+
+    /* ===== ROLE SELECTOR ===== */
+    .role-selector { grid-template-columns: 1fr !important; gap: 8px !important; }
+
+    /* ===== MODALS ===== */
+    .login-modal-box { width: 92vw !important; max-width: 400px !important; }
+    .modal-overlay .auth-card {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        max-height: 88vh !important;
+    }
+
+    /* ===== ACCORDION ===== */
+    .acc-item { border-radius: 12px !important; }
+    .acc-header { font-size: 0.85rem !important; padding: 12px 14px !important; }
+    .acc-body { padding: 12px 14px 14px !important; }
+
+    /* ===== FOOTER ===== */
+    footer { padding: 16px 10px !important; font-size: 0.72rem !important; }
+}
+
+/* ===== RESPONSIVE CHO TABLET 769-1024px ===== */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .main-tabs { padding: 0 8px; }
+    .main-tab { padding: 10px 12px; }
+}
+
+
+/* ============================================================
+   TAB 3 QUẢN TRỊ — Pills cuộn ngang + Bóng mờ 2 mép
+   (Bao gồm: ẩn accordion cũ, hiện pills, hiện content bên dưới)
+============================================================ */
+@media (max-width: 768px) {
+
+    /* ===== ẨN ACCORDION CŨ ===== */
+    #panel-tab3 .mobile-acc { display: none !important; }
+    #mobile-admin-panel-view { display: none !important; }
+
+    /* ===== HIỆN LAYOUT SIDEBAR + CONTENT ===== */
+    #panel-tab3 .layout-sidebar { display: block !important; }
+
+    /* ===== BỌC SIDEBAR BẰNG WRAPPER ĐỂ TẠO BÓNG MỜ ===== */
+    #panel-tab3 .sidebar {
+        position: relative !important;
+        display: flex !important;
+        gap: 8px !important;
+        overflow-x: auto !important;
+        padding: 4px 12px 12px !important;
+        margin-bottom: 12px !important;
+        background: linear-gradient(90deg,
+            rgba(248,250,252,1) 0%,
+            rgba(248,250,252,0) 20px,
+            rgba(248,250,252,0) calc(100% - 20px),
+            rgba(248,250,252,1) 100%) !important;
+        border: none !important;
+        box-shadow: none !important;
+        position: static !important;
+        max-height: none !important;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        /* Mask tạo hiệu ứng fade 2 mép */
+        -webkit-mask-image: linear-gradient(90deg,
+            transparent 0,
+            #000 24px,
+            #000 calc(100% - 24px),
+            transparent 100%);
+        mask-image: linear-gradient(90deg,
+            transparent 0,
+            #000 24px,
+            #000 calc(100% - 24px),
+            transparent 100%);
+    }
+    #panel-tab3 .sidebar::-webkit-scrollbar { display: none; }
+
+    #panel-tab3 .sidebar .sidebar-title,
+    #panel-tab3 .sidebar .sidebar-group-title { display: none !important; }
+
+    /* ===== TỪNG PILL ===== */
+    #panel-tab3 .sidebar-item {
+        flex-shrink: 0 !important;
+        padding: 9px 14px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        background: #fff !important;
+        color: #475569 !important;
+        border-radius: 22px !important;
+        font-size: 0.78rem !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        transition: all 0.2s !important;
+        margin-bottom: 0 !important;
+        width: auto !important;
+    }
+
+    #panel-tab3 .sidebar-item .ind { display: none !important; }
+
+    /* ===== ICON CHO TỪNG PILL ===== */
+    #panel-tab3 .sidebar-item::before {
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 0.8rem;
+        line-height: 1;
+        display: inline-block;
+    }
+    #panel-tab3 .sidebar-item[data-tab3="q-hocsinh"]::before   { content: '\f0c0'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-sodo"]::before      { content: '\f00a'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-chucvu"]::before    { content: '\f5a2'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-noiquy"]::before    { content: '\f24e'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-xeploai"]::before   { content: '\f091'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-tkb"]::before       { content: '\f133'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-minhchung"]::before { content: '\f03e'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-zalo"]::before      { content: '\f075'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-pdf"]::before       { content: '\f1c1'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-config"]::before    { content: '\f013'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-matkhau"]::before   { content: '\f084'; }
+    #panel-tab3 .sidebar-item[data-tab3="q-lichkhoa"]::before  { content: '\f023'; }
+
+    /* Pill active */
+    #panel-tab3 .sidebar-item.active {
+        background: linear-gradient(135deg, #3b82f6, #1e40af) !important;
+        color: #fff !important;
+        border-color: transparent !important;
+        box-shadow: 0 6px 20px rgba(37,99,235,0.25) !important;
+    }
+
+    /* ===== CONTENT PANEL HIỆN LẠI ===== */
+    #panel-tab3 .layout-sidebar .content-panel {
+        display: block !important;
+        background: #fff !important;
+        border: 1px solid #f1f5f9 !important;
+        border-radius: 18px !important;
+        padding: 14px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06) !important;
+        min-height: auto !important;
+        margin: 0 12px !important;
+    }
+
+    #panel-tab3 .content-panel .panel h2 {
+        font-size: 0.95rem !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 12px !important;
+    }
+
+    /* Table trong panel Tab 3 */
+    #panel-tab3 .content-panel table { font-size: 0.75rem !important; }
+    #panel-tab3 .content-panel th,
+    #panel-tab3 .content-panel td { padding: 8px 6px !important; }
+    #panel-tab3 .content-panel .table-responsive { border-radius: 12px !important; }
+
+    /* Form trong panel */
+    #panel-tab3 .content-panel input,
+    #panel-tab3 .content-panel select,
+    #panel-tab3 .content-panel textarea {
+        padding: 10px 12px !important;
+        border-radius: 10px !important;
+        font-size: 0.82rem !important;
+    }
+
+    /* Button trong panel */
+    #panel-tab3 .content-panel .btn-action {
+        padding: 10px 16px !important;
+        border-radius: 10px !important;
+        font-size: 0.82rem !important;
+    }
+
+    /* ===== TOPBAR TAB 3 (Đang đăng nhập GVCN) ===== */
+    #panel-tab3 > div:first-child {
+        margin: 0 12px 12px !important;
+        border-radius: 12px !important;
+        padding: 10px 14px !important;
+    }
+}
+
+
+/* ============================================================
+   BANNER TRANG TRÍ — Thêm họa tiết + cải thiện typography
+============================================================ */
+@media (max-width: 768px) {
+
+    /* Nền banner có thêm họa tiết lấm tấm */
+    .modern-banner-wrapper {
+        background:
+            radial-gradient(circle at 15% 25%, rgba(255,255,255,0.18) 0%, transparent 40%),
+            radial-gradient(circle at 85% 80%, rgba(255,255,255,0.12) 0%, transparent 40%),
+            radial-gradient(circle at 50% 0%, rgba(147,197,253,0.4) 0%, transparent 60%),
+            linear-gradient(135deg, #60a5fa 0%, #2563eb 50%, #1e40af 100%) !important;
+        padding: 26px 16px 32px !important;
+        position: relative;
+    }
+
+    /* Sao lấp lánh trang trí */
+    .modern-banner-wrapper::after {
+        content: '✈️';
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        font-size: 1.5rem;
+        transform: rotate(-15deg);
+        opacity: 0.85;
+        filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15));
+        pointer-events: none;
+        animation: floatPlane 4s ease-in-out infinite;
+    }
+    .modern-banner-wrapper::before {
+        content: '📚';
+        position: absolute;
+        bottom: 12px;
+        right: 14px;
+        font-size: 2.2rem;
+        opacity: 0.9;
+        filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15));
+        pointer-events: none;
+        z-index: 1;
+        animation: floatBooks 4s ease-in-out infinite;
+    }
+
+    @keyframes floatPlane {
+        0%, 100% { transform: translateY(0) rotate(-15deg); }
+        50% { transform: translateY(-6px) rotate(-18deg); }
+    }
+    @keyframes floatBooks {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-5px) rotate(3deg); }
+    }
+
+    /* Thêm lá cây trang trí bằng CSS */
+    .modern-banner-wrapper .banner-week-badge::after {
+        content: '🌿';
+        position: absolute;
+        left: -50px;
+        bottom: -70px;
+        font-size: 2.5rem;
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    /* ===== RIBBON ĐẸP HƠN ===== */
+    .banner-line-1 {
+        font-size: 1.05rem !important;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%) !important;
+        color: #1d4ed8 !important;
+        padding: 10px 24px !important;
+        border-radius: 50px !important;
+        display: inline-block !important;
+        margin-bottom: 14px !important;
+        box-shadow:
+            0 6px 16px rgba(0,0,0,0.15),
+            inset 0 -2px 0 rgba(29,78,216,0.08) !important;
+        transform: rotate(-1.5deg);
+        letter-spacing: -0.02em;
+        font-weight: 900 !important;
+        text-transform: none !important;
+        position: relative;
+        z-index: 2;
+        border: 2px solid rgba(255,255,255,0.9);
+    }
+
+    /* Thêm icon tốt nghiệp trước chữ */
+    .banner-line-1::before {
+        content: '🎓';
+        margin-right: 6px;
+        font-size: 1.1rem;
+        display: inline-block;
+    }
+
+    /* ===== DÒNG 2: LỚP + NĂM ===== */
+    .banner-line-2 {
+        font-size: 0.88rem !important;
+        color: #fff !important;
+        font-weight: 800 !important;
+        margin-bottom: 6px !important;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        letter-spacing: 0.01em;
+    }
+
+    /* ===== DÒNG 3: GVCN ===== */
+    .banner-line-3 {
+        font-size: 0.75rem !important;
+        color: #fef3c7 !important;
+        font-weight: 700 !important;
+        margin-bottom: 14px !important;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        line-height: 1.5;
+    }
+
+    /* ===== BADGE TUẦN ===== */
+    .banner-week-badge {
+        background: rgba(255,255,255,0.25) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1.5px solid rgba(255,255,255,0.5) !important;
+        color: #fff !important;
+        padding: 8px 18px !important;
+        font-size: 0.78rem !important;
+        font-weight: 800 !important;
+        border-radius: 22px !important;
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        letter-spacing: 0.02em;
+    }
+
+    .banner-week-badge i {
+        color: #fef3c7 !important;
+        font-size: 0.85rem;
+    }
+}
+
+/* ============================================================
+   FIX: Màu chữ GVCN trong banner đậm & nổi bật hơn
+============================================================ */
+@media (max-width: 768px) {
+
+    .banner-line-3 {
+        color: #fde047 !important;
+        font-weight: 900 !important;
+        font-size: 0.78rem !important;
+        text-shadow:
+            0 1px 2px rgba(0,0,0,0.4),
+            0 0 8px rgba(253,224,71,0.4) !important;
+        letter-spacing: 0.02em !important;
+    }
+
+    /* Nếu muốn tên "Trịnh Ngọc Ánh" in đậm riêng */
+    .banner-line-3 #banner-teacher,
+    .banner-line-3 span:first-child {
+        color: #ffffff !important;
+        background: linear-gradient(135deg, #fde047, #f59e0b);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 900 !important;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+    }
+}
+
+/* ============================================================
+   FIX: Tên GVCN nổi bật hẳn — đậm + to + có highlight
+============================================================ */
+@media (max-width: 768px) {
+
+    /* Chữ thường: GVCN + Trường — mờ nhẹ */
+    .banner-line-3 {
+        color: rgba(255,255,255,0.7) !important;
+        font-weight: 600 !important;
+        font-size: 0.72rem !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+        letter-spacing: 0.01em !important;
+    }
+
+    /* Tên GVCN — nổi bật nhất */
+    .banner-line-3 #banner-teacher {
+        color: #fff !important;
+        background: linear-gradient(135deg, #fef3c7, #fbbf24);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 900 !important;
+        font-size: 0.85rem !important;
+        letter-spacing: 0.03em !important;
+        filter:
+            drop-shadow(0 2px 3px rgba(0,0,0,0.5))
+            drop-shadow(0 0 8px rgba(251,191,36,0.6));
+        padding: 0 4px !important;
+    }
+}
+
+/* ============================================================
+   FIX v3: Cân bằng 2 dòng banner
+   - Dòng "Lớp 11A5..." → đậm, to, nổi bật
+   - Dòng "GVCN..." → nhỏ, nhạt hơn (vừa vừa)
+============================================================ */
+@media (max-width: 768px) {
+
+    /* ===== DÒNG 2: LỚP + NĂM HỌC — ĐẬM, TO ===== */
+    .banner-line-2 {
+        color: #ffffff !important;
+        font-weight: 900 !important;
+        font-size: 0.92rem !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+        letter-spacing: 0.01em !important;
+        margin-bottom: 8px !important;
+        -webkit-text-fill-color: #ffffff !important;
+        background: none !important;
+    }
+
+    /* ===== DÒNG 3: GVCN — NHỎ, NHẠT VỪA ===== */
+    .banner-line-3 {
+        color: rgba(255,255,255,0.78) !important;
+        font-weight: 600 !important;
+        font-size: 0.7rem !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.4) !important;
+        letter-spacing: 0.01em !important;
+        line-height: 1.5 !important;
+        -webkit-text-fill-color: rgba(255,255,255,0.78) !important;
+        background: none !important;
+        filter: none !important;
+    }
+
+    /* Tên GVCN — nổi nhẹ (không quá chói) */
+    .banner-line-3 #banner-teacher {
+        color: #fde047 !important;
+        font-weight: 800 !important;
+        font-size: 0.74rem !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+        letter-spacing: 0.02em !important;
+        -webkit-text-fill-color: #fde047 !important;
+        background: none !important;
+        -webkit-background-clip: unset !important;
+        background-clip: unset !important;
+        filter: none !important;
+    }
+}
+
+/* ============================================================
+   FIX v4: Lớp 11A5 VÀNG NỔI — GVCN nhạt
+============================================================ */
+@media (max-width: 768px) {
+
+    /* ===== DÒNG 2: "Lớp 11A5..." — VÀNG NỔI ===== */
+    .banner-line-2 {
+        color: #fde047 !important;
+        font-weight: 900 !important;
+        font-size: 0.92rem !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+        letter-spacing: 0.02em !important;
+        margin-bottom: 8px !important;
+        -webkit-text-fill-color: #fde047 !important;
+        background: none !important;
+        filter: none !important;
+    }
+
+    /* ===== DÒNG 3: GVCN — TRẮNG NHẠT ===== */
+    .banner-line-3 {
+        color: rgba(255,255,255,0.78) !important;
+        font-weight: 600 !important;
+        font-size: 0.7rem !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.4) !important;
+        letter-spacing: 0.01em !important;
+        line-height: 1.5 !important;
+        -webkit-text-fill-color: rgba(255,255,255,0.78) !important;
+        background: none !important;
+        filter: none !important;
+    }
+
+    /* Tên GVCN — BỎ nổi bật, để chung màu nhạt */
+    .banner-line-3 #banner-teacher {
+        color: rgba(255,255,255,0.78) !important;
+        font-weight: 600 !important;
+        font-size: 0.7rem !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.4) !important;
+        letter-spacing: 0.01em !important;
+        -webkit-text-fill-color: rgba(255,255,255,0.78) !important;
+        background: none !important;
+        -webkit-background-clip: unset !important;
+        background-clip: unset !important;
+        filter: none !important;
+    }
+}
+
